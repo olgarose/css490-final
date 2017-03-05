@@ -3,7 +3,6 @@ from flask import render_template, url_for
 
 application = Flask(__name__)
 
-
 # method to render main page
 @application.route('/')
 def main():
@@ -18,3 +17,14 @@ def login():
 
 if __name__ == '__main__':
     application.run(debug=True)
+
+
+      # Uploading data
+    # step 0, Create s3 private bucket
+    #
+    # step 1, copy data to s3 private bucket
+    #
+    # step 2, parse data, skip re-download since we know we're not changing private bucket data
+    # outside of this program
+    #
+    # step 3, populate table from input file
