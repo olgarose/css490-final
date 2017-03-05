@@ -1,12 +1,20 @@
 from flask import Flask
+from flask import render_template, url_for
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
+# method to render main page
+@application.route('/')
+def main():
+    return render_template('index.html')
+
+
+# method to render login page
+@application.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
 
 
 if __name__ == '__main__':
-    app.run()
+    application.run(debug=True)
