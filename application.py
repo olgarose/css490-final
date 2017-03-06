@@ -3,16 +3,40 @@ from flask import render_template, url_for
 
 application = Flask(__name__)
 
-# method to render main page
-@application.route('/')
-def main():
-    return render_template('index.html')
+username = ''
+password = ''
 
 
 # method to render login page
 @application.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template('login.html')
+
+
+# method to render main page
+@application.route('/')
+def main():
+    username = ''
+    password = ''
+    return render_template('index.html')
+
+
+# method to render login page
+@application.route('/login_page', methods=['GET', 'POST'])
+def login_page():
+    return render_template('login.html')
+
+
+# method to render signup page
+@application.route('/signup_page', methods=['GET', 'POST'])
+def signup_page():
+    return render_template('signup.html')
+
+
+# method to render account page
+@application.route('/account_page', methods=['GET', 'POST'])
+def account_page():
+    return render_template('account.html')
 
 
 if __name__ == '__main__':
