@@ -24,17 +24,17 @@ body, html {height: 100%}
 <div class="w3-top">
   <div class="w3-bar w3-black w3-card-2">
     <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-<<<<<<< HEAD
+<!--<<<<<<< HEAD-->
     <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
     <a href="{{ url_for('login_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>
     <a href="{{ url_for('signup_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGNUP</a>
     <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
-=======
-    <a action="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
-    <a href="{{ url_for('login') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>
-    <a action="/signup" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGN UP</a>
-    <a action="/contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
->>>>>>> refs/heads/Shane
+<!--=======-->
+    <!--<a action="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>-->
+    <!--<a href="{{ url_for('login') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>-->
+    <!--<a action="/signup" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGN UP</a>-->
+    <!--<a action="/contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>-->
+<!--&gt;>>>>>> refs/heads/Shane-->
     <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
   </div>
 </div>
@@ -46,34 +46,34 @@ body, html {height: 100%}
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
   <div class="w3-display-topleft w3-padding-large w3-xlarge">
-<<<<<<< HEAD
+<!--<<<<<<< HEAD-->
     Signup Page
   </div>
+  <!--<div class="w3-display-middle">-->
+        <!--<p align="center">Email:</p>-->
+        <!--<p align="center"><input align="center" type="text" name="email" placeholder="Email Address*" required></p>-->
+        <!--<p align="center">Password:</p>-->
+        <!--<p align="center"><input align="middle" type="password" name="password" placeholder="Password*"required></p>-->
+        <!--<p align="center"><input align="center" type="submit" value="Signup"></p>-->
+<!--=======-->
+    <!--Login-->
+  <!--</div>-->
   <div class="w3-display-middle">
-    <h1 class="w3-jumbo w3-animate-top">COMING SOON</h1>
-    <hr class="w3-border-grey" style="margin:auto;width:40%">
-    <p class="w3-large w3-center">7 days left</p>
-=======
-    Login
-  </div>
-  <div class="w3-display-middle">
-    <div class="w3-card-24 w3-dark-grey w3-animate-opacity w3-hover-shadow">
-      <hr class="w3-border-grey" style="margin:auto;width:90%">
+    <!--<div class="w3-card-24 w3-dark-grey w3-animate-opacity w3-hover-shadow">-->
+      <!--<hr class="w3-border-grey" style="margin:auto;width:90%">-->
       <form action="/register" method=post>
-        <div class="flashes" align="center">
-          {% for message in get_flashed_messages() %}
-            {{message}}
-          {% endfor %}
-        </div>
-        <input class="w3-input" name="email" type="email" style="margin:auto;width:90%" placeholder="Email Address*" required>
-        <input class="w3-input" name="password" type="password" style="margin:auto;width:90%" placeholder="Password*" required>
-        <input class="w3-input" name="password_verify" type="password" style="margin:auto;width:90%" placeholder="Verify Password*" required>
-        <input class="w3-input" name="first_name" type="text" style="margin:auto;width:90%" placeholder="First Name*" required>  
-        <input class="w3-input" name="last_name" type="text" style="margin:auto;width:90%" placeholder="Last Name*" required>   
+        <!--<div class="flashes" align="center">-->
+          <!--{% for message in get_flashed_messages() %}-->
+            <!--{{message}}-->
+          <!--{% endfor %}-->
+        <!--</div>-->
+        <input class="w3-input" name="email" type="email" placeholder="Email Address*" required>
+        <input class="w3-input" name="password" type="password"  placeholder="Password*" required>
+        <input class="w3-input" name="password_verify" type="password"  placeholder="Verify Password*" required>
+        <input class="w3-input" name="first_name" type="text"  placeholder="First Name*" required>
+        <input class="w3-input" name="last_name" type="text" placeholder="Last Name*" required>
         <button class="w3-bar w3-black" type="submit">Register</button>
       </form>
-    </div>
->>>>>>> refs/heads/Shane
   </div>
   <div class="w3-display-bottomleft w3-padding-large">
     Powered by "CSS490 - Clouds"</a>
