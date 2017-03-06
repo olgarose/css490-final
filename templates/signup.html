@@ -24,10 +24,10 @@ body, html {height: 100%}
 <div class="w3-top">
   <div class="w3-bar w3-black w3-card-2">
     <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-    <a href="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+    <a action="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
     <a href="{{ url_for('login') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>
-    <a href="/signup" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGN UP</a>
-    <a href="/contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
+    <a action="/signup" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGN UP</a>
+    <a action="/contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
     <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
   </div>
 </div>
@@ -42,12 +42,20 @@ body, html {height: 100%}
     Login
   </div>
   <div class="w3-display-middle">
-    <div class="w3-card w3-dark-grey w3-animate-opacity w3-hover-shadow">
+    <div class="w3-card-24 w3-dark-grey w3-animate-opacity w3-hover-shadow">
       <hr class="w3-border-grey" style="margin:auto;width:90%">
-      <form action="/login" method=post>
-        <input class="w3-input" name="email" type="text" style="margin:auto;width:90%" placeholder="Email Address*" required>
-        <input class="w3-input" name="password" type="password" style="margin:auto;width:90%" placeholder="Password*" required>     
-        <button class="w3-bar type="submit" style="width:90%">Register</button>
+      <form action="/register" method=post>
+        <div class="flashes" align="center">
+          {% for message in get_flashed_messages() %}
+            {{message}}
+          {% endfor %}
+        </div>
+        <input class="w3-input" name="email" type="email" style="margin:auto;width:90%" placeholder="Email Address*" required>
+        <input class="w3-input" name="password" type="password" style="margin:auto;width:90%" placeholder="Password*" required>
+        <input class="w3-input" name="password_verify" type="password" style="margin:auto;width:90%" placeholder="Verify Password*" required>
+        <input class="w3-input" name="first_name" type="text" style="margin:auto;width:90%" placeholder="First Name*" required>  
+        <input class="w3-input" name="last_name" type="text" style="margin:auto;width:90%" placeholder="Last Name*" required>   
+        <button class="w3-bar w3-black" type="submit">Register</button>
       </form>
     </div>
   </div>
