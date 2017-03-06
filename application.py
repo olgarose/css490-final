@@ -8,6 +8,16 @@ from flask import render_template, url_for, request, jsonify, Markup, flash
 
 application = Flask(__name__)
 
+<<<<<<< HEAD
+username = ''
+password = ''
+
+
+# method to render login page
+@application.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
+=======
 access_key = 'AKIAJSVUOAS23R7X3XZA'
 secret_key = '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'
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
@@ -46,16 +56,26 @@ def createTable():
     except:
         print('Table already made')
         return
+>>>>>>> refs/heads/Shane
 
 
 # method to render main page
 @application.route('/')
 def main():
+<<<<<<< HEAD
+    username = ''
+    password = ''
+=======
     createTable()
+>>>>>>> refs/heads/Shane
     return render_template('index.html')
 
 
 # method to render login page
+<<<<<<< HEAD
+@application.route('/login_page', methods=['GET', 'POST'])
+def login_page():
+=======
 @application.route('/login', methods=['GET', 'POST'])
 def login():
     createTable()
@@ -97,7 +117,20 @@ def register():
         'first_name': first_name_input, 'last_name': last_name_input}
     table.put_item(Item=dict)
 
+>>>>>>> refs/heads/Shane
     return render_template('login.html')
+
+
+# method to render signup page
+@application.route('/signup_page', methods=['GET', 'POST'])
+def signup_page():
+    return render_template('signup.html')
+
+
+# method to render account page
+@application.route('/account_page', methods=['GET', 'POST'])
+def account_page():
+    return render_template('account.html')
 
 
 if __name__ == '__main__':
