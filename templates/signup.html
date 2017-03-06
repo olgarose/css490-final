@@ -28,7 +28,7 @@ body, html {height: 100%}
     <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
     <a href="{{ url_for('login_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>
     <a href="{{ url_for('signup_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGNUP</a>
-    <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
+    <a href="{{ url_for('account_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">ACCOUNT</a>
 <!--=======-->
     <!--<a action="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>-->
     <!--<a href="{{ url_for('login') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>-->
@@ -61,7 +61,7 @@ body, html {height: 100%}
   <div class="w3-display-middle">
     <!--<div class="w3-card-24 w3-dark-grey w3-animate-opacity w3-hover-shadow">-->
       <!--<hr class="w3-border-grey" style="margin:auto;width:90%">-->
-      <form action="/register" method=post>
+      <form action="/signup" method=post>
         <!--<div class="flashes" align="center">-->
           <!--{% for message in get_flashed_messages() %}-->
             <!--{{message}}-->
