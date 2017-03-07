@@ -6,59 +6,92 @@
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <style>
-body,h1 {font-family: "Raleway", sans-serif}
-body, html {height: 100%}
-.bgimg {
-    background-image: url("{{ url_for('static', filename='home_page.jpg') }}");
-    min-height: 100%;
-    background-position: center;
-    background-size: cover;
-}
+    body, h1 {
+        font-family: "Raleway", sans-serif
+    }
+
+    body, html {
+        height: 100%
+    }
+
+    .bgimg {
+        background-image: url("{{ url_for('static', filename='home_page.jpg') }}");
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
 </style>
 <body>
 
 
-
-
 <!-- Navbar -->
 <div class="w3-top">
-  <div class="w3-bar w3-black w3-card-2">
-    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-    <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
-    <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
-  </div>
+    <div class="w3-bar w3-black w3-card-2">
+        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right"
+           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                class="fa fa-bars"></i></a>
+        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
+        <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i
+                class="fa fa-search"></i></a>
+    </div>
 </div>
 
 
-
-
-
-
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-  <div class="w3-display-topleft w3-padding-large w3-xlarge">
-    Account Page
-  </div>
-  <!--<div class="w3-display-middle">-->
+    <div class="w3-display-topleft w3-padding-large w3-xlarge">
+        Account Page
+    </div>
+    <!--<div class="w3-display-middle">-->
     <!--<h1 class="w3-jumbo w3-animate-top">YOUR ACCOUNT FUNCTIONALITY COMING SOON</h1>-->
     <!--<hr class="w3-border-grey" style="margin:auto;width:40%">-->
     <!--<p class="w3-large w3-center">7 days left</p>-->
-  <!--</div>-->
+    <!--</div>-->
 
+    {# Navigation Bar #}
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">My scratchpad</a>
+        </div>
+    </div>
+    </nav>
 
-   <div class="w3-display-middle">
-      <form action="/add_contact" method=post>
-        <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
-        <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
-        <input class="w3-input" name="password" type="number" min="0" placeholder="Phone number*" required>
-        <input type="tel" id="fieldPhone" placeholder="(555) 555-1212">
-        <button class="w3-bar w3-black" type="submit">Add</button>
-      </form>
+    {# Message Box #}
+    <div class="w3-display-middle">
+        {% for comment in comments %}
+            <div class="row">
+                {{ comment }}
+            </div>
+        {% endfor %}
+        <div class="row">
+            <form action="." method="POST">
+                <textarea class="form-control" name="contents" placeholder="Enter a comment"></textarea>
+                <input type="submit" value="Post comment">
+            </form>
+        </div>
+    </div>
+
+    {# Adding Contact Form #}
+    <div class="w3-display-middle">
+        <form action="/add_contact" method=post>
+            <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
+            <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
+            <input class="w3-input" name="password" type="number" min="0" placeholder="Phone number*" required>
+            <input type="tel" id="fieldPhone" placeholder="(555) 555-1212">
+            <button class="w3-bar w3-black" type="submit">Add</button>
+        </form>
     </div>
 
 
-  <div class="w3-display-bottomleft w3-padding-large">
-    Powered by "CSS490 - Clouds"</a>
-  </div>
+    <div class="w3-display-bottomleft w3-padding-large">
+        Powered by "CSS490 - Clouds"</a>
+    </div>
 </div>
 
 </body>
