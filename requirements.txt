@@ -1,3 +1,4 @@
+twilio
 awscli==1.11.43
 awsebcli==3.10.0
 blessed==1.14.1

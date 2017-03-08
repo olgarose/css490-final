@@ -4,17 +4,22 @@ import boto3, os, requests, shutil
 from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask
 from flask import render_template, redirect, url_for, request, jsonify, Markup, flash
+import twilio.twiml
 
 application = Flask(__name__)
 
 username = ''
 password = ''
 
-
 access_key = 'AKIAJSVUOAS23R7X3XZA'
 secret_key = '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'
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 table = dynamodb.Table('490final-userinfostore')
+callers = {
+    "+14158675309": "Curious George",
+    "+14158675310": "Boots",
+    "+14158675311": "Virgil",
+}
 
 
 # this function will add contact to the contacts_database
@@ -86,8 +91,9 @@ def login():
     email_input = request.form.get("email")
     password_input = request.form.get("password")
 
-    #print("email: ", email_input, "\npassword: ", password_input)
+    # print("email: ", email_input, "\npassword: ", password_input)
     return render_template('login.html')
+
 
 # method to render sign up page
 @application.route('/signup', methods=['GET', 'POST'])
@@ -111,11 +117,12 @@ def signup():
         flash(dup_email_error)
         return render_template('signup.html')
 
-    dict={'email': email_input, 'password': password_input,
-        'first_name': first_name_input, 'last_name': last_name_input}
+    dict = {'email': email_input, 'password': password_input,
+            'first_name': first_name_input, 'last_name': last_name_input}
     table.put_item(Item=dict)
 
     return render_template('login.html')
+
 
 # # method to render register page
 # @application.route('/register', methods=['GET', 'POST'])
@@ -149,15 +156,25 @@ def signup():
 # method to render signup page
 @application.route('/send_message', methods=['GET', 'POST'])
 def send_message():
-    print('Making an attempt to send message')
+    """Respond and greet the caller by name."""
+
+    from_number = request.values.get('From', None)
+    if from_number in callers:
+        message = callers[from_number] + ", thanks for the message!"
+    else:
+        message = "Monkey, thanks for the message!"
+
+    resp = twilio.twiml.Response()
+    print (resp.message(message))
+
     return render_template('account.html')
 
 
 if __name__ == '__main__':
-    application.secret_key='cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1fzlJI/o+'
+    application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1fzlJI/o+'
     application.run(debug=True)
 
-      # Uploading data
+    # Uploading data
     # step 0, Create s3 private bucket
     #
     # step 1, copy data to s3 private bucket
