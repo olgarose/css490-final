@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <style>
     body, h1 {
         font-family: "Raleway", sans-serif
@@ -22,13 +23,21 @@
     }
 
     .messagebox {
-        width: 300px;
-        height: 200px;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        margin: -100px 0 0 -150px;
+        width: 150%;
     }
+
+    .row_page{
+        position: absolute;
+        top: 40%;
+    }
+
+    .contact_form{
+
+        padding-right: 30%;
+        padding-left: 20%;
+    }
+
+
 </style>
 <body>
 
@@ -56,48 +65,63 @@
     <!--<p class="w3-large w3-center">7 days left</p>-->
     <!--</div>-->
 
-    {# Navigation Bar #}
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">My scratchpad</a>
-        </div>
-        </nav>
-    </div>
 
-    {# Message Box #}
-    <div class="messagebox">
-        <form action="/send_message" method=post>
-            <div class="col-md-8">
-                <textarea class="form-control" id="message" name="message" placeholder="Enter your message"
-                          rows="5"></textarea>
-                <br>
-                <div class="row">
-                    <div class="col-md-12 form-group">
-                        <button class="btn pull-right" type="submit">Send</button>
-                    </div>
+
+
+    <div class="row_page">
+        <div class="col-md-4">
+            {# Navigation Bar #}
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">My scratchpad</a>
                 </div>
+                </nav>
             </div>
-        </form>
+        </div>
+        <div class="col-md-4">
+                {# Message Box #}
+            <div class="messagebox">
+                <form action="/send_message" method=post>
+                    <div class="col-md-8">
+                        <textarea class="form-control" id="message" name="message" placeholder="Enter your message"
+                                  rows="5"></textarea>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <button class="w3-bar w3-black" type="submit">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4">
+            {# Adding Contact Form #}
+            <div class="contact_form">
+                <form action="/add_contact" method=post>
+                    <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
+                    <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
+                    <!--<input class="w3-input" name="password" type="number" min="0" placeholder="Phone number*" required>-->
+                    <input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>
+                    <button class="w3-bar w3-black" type="submit">Add</button>
+                </form>
+            </div>
+        </div>
     </div>
 
 
-    {# Adding Contact Form #}
-    <div class="w3-display-right">
-        <form action="/add_contact" method=post>
-            <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
-            <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
-            <input class="w3-input" name="password" type="number" min="0" placeholder="Phone number*" required>
-            <input type="tel" id="fieldPhone" placeholder="(555) 555-1212">
-            <button class="w3-bar w3-black" type="submit">Add</button>
-        </form>
-    </div>
+
+
+
+
+
 
 
     <div class="w3-display-bottomleft w3-padding-large">

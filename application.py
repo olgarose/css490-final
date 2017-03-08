@@ -4,6 +4,7 @@ import boto3, os, requests, shutil
 from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask
 from flask import render_template, redirect, url_for, request, jsonify, Markup, flash
+import uuid
 
 application = Flask(__name__)
 
@@ -15,12 +16,31 @@ access_key = 'AKIAJSVUOAS23R7X3XZA'
 secret_key = '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'
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 table = dynamodb.Table('490final-userinfostore')
+contacts_table = dynamodb.Table('css490-final-contacts-list')
 
 
 # this function will add contact to the contacts_database
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
-    print("GOT HERE")
+    # getting names to query from webrequest
+    firstname = request.form['first_name']
+    lastname = request.form['last_name']
+    phone = request.form['phone']
+
+    if len(firstname) or len(phone) == 0:
+
+        return redirect("/account_page")
+
+    user_id = str(uuid.uuid4())
+
+
+    if len(lastname) == 0:
+        new_item = {'contact_id': user_id, 'first_name': firstname, 'phone_number': phone}
+    else:
+        new_item = {'contact_id': user_id, 'first_name': firstname, 'last_name': lastname, 'phone_number': phone}
+
+    contacts_table.put_item(Item=new_item)
+
     return redirect("/account_page")
 
 
