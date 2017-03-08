@@ -89,6 +89,13 @@ def login():
     #print("email: ", email_input, "\npassword: ", password_input)
     return render_template('login.html')
 
+
+# method to render login page
+@application.route('/signup_page', methods=['GET', 'POST'])
+def signup_page():
+    return render_template('signup.html')
+
+
 # method to render sign up page
 @application.route('/signup', methods=['GET', 'POST'])
 def signup():
