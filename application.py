@@ -31,22 +31,25 @@ def add_contact():
     firstname = request.form['first_name']
     lastname = request.form['last_name']
     phone = request.form['phone']
+    print(len(firstname))
+    print(len(phone))
 
-    if len(firstname) or len(phone) == 0:
+    # if first name or phone number are empty - NEED TO DISPLAY ERROR MESSAGE
+    if len(firstname) == 0 or len(phone) == 0:
+        result_message = Markup("<h4 style=\"color: #e21f46;\">PLEASE ENTER VALUES IN ALL REQUIRED FILEDS</h4>")
+        flash(result_message)
+        return redirect("/account_page")
+    else:
+
+        user_id = str(uuid.uuid4())
+        if len(lastname) == 0:
+            new_item = {'contact_id': user_id, 'first_name': firstname, 'phone_number': phone}
+        else:
+            new_item = {'contact_id': user_id, 'first_name': firstname, 'last_name': lastname, 'phone_number': phone}
+
+        contacts_table.put_item(Item=new_item)
 
         return redirect("/account_page")
-
-    user_id = str(uuid.uuid4())
-
-
-    if len(lastname) == 0:
-        new_item = {'contact_id': user_id, 'first_name': firstname, 'phone_number': phone}
-    else:
-        new_item = {'contact_id': user_id, 'first_name': firstname, 'last_name': lastname, 'phone_number': phone}
-
-    contacts_table.put_item(Item=new_item)
-
-    return redirect("/account_page")
 
 
 def createTable():
