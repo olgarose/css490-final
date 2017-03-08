@@ -147,9 +147,10 @@ def signup():
 
 
 # method to render signup page
-@application.route('/signup_page', methods=['GET', 'POST'])
-def signup_page():
-    return render_template('signup.html')
+@application.route('/send_message', methods=['GET', 'POST'])
+def send_message():
+    print('Making an attempt to send message')
+    return render_template('account.html')
 
 
 if __name__ == '__main__':
