@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>text-text</title>
+<title>Account</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
@@ -36,7 +36,15 @@
         padding-right: 30%;
         padding-left: 20%;
     }
+    .add_contacts{
 
+        padding-right: 70%;
+        padding-left: 10%;
+    }
+
+    .selectpicker{
+        width: 100%;
+    }
 
 </style>
 <body>
@@ -70,20 +78,48 @@
 
     <div class="row_page">
         <div class="col-md-4">
-            {# Navigation Bar #}
+            <!--{# Navigation Bar #}-->
             <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                            aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">My scratchpad</a>
+                <!--<div class="navbar-header">-->
+                    <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"-->
+                            <!--aria-expanded="false" aria-controls="navbar">-->
+                        <!--<span class="sr-only">Toggle navigation</span>-->
+                        <!--<span class="icon-bar"></span>-->
+                        <!--<span class="icon-bar"></span>-->
+                        <!--<span class="icon-bar"></span>-->
+                    <!--</button>-->
+                    <!--<a class="navbar-brand" href="#">My scratchpad</a>-->
+                <!--</div>-->
+                <!--</nav>-->
+
+
+                <div class="add_contacts">
+                    <form action="/select_contacts" method="POST" id="select_contacts">
+                        <!--<input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>-->
+                        <!--<input class="w3-input" name="last_name" type="text" placeholder="Last Name">-->
+                        <!--&lt;!&ndash;<input class="w3-input" name="password" type="number" min="0" placeholder="Phone number*" required>&ndash;&gt;-->
+                        <!--<input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>-->
+
+
+
+
+
+
+
+                        <select class="selectpicker" multiple data-selected-text-format="count > 3">
+                            <!--<option>Ketchup</option>-->
+                            <!--<option>Relish</option>-->
+                            <!--<option>Onions</option>-->
+                            {% for contact in contacts %}
+                                <option>{{ contacts[contact]['first'] }}        {{ contacts[contact]['number'] }}</option>  <br>
+                            {% endfor %}
+
+                        </select>
+                        <button class="w3-bar w3-black" type="submit">Add</button>
+                    </form>
                 </div>
-                </nav>
             </div>
+
         </div>
         <div class="col-md-4">
                 {# Message Box #}
@@ -110,6 +146,8 @@
                     <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
                     <!--<input class="w3-input" name="password" type="number" min="0" placeholder="Phone number*" required>-->
                     <input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>
+                    <br>
+                    <br>
                     <button class="w3-bar w3-black" type="submit">Add</button>
                 </form>
             </div>
