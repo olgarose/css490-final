@@ -3,7 +3,7 @@
 <title>Account</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script type = "text/javascript" src = "{{ url_for('static', filename = 'javascr.js') }}" ></script>
+<script type="text/javascript" src="{{ url_for('static', filename = 'javascr.js') }}"></script>
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -73,23 +73,12 @@
     <div class="w3-display-topleft w3-padding-large w3-xlarge">
         Account Page
     </div>
+    {# BLANK LEFT SIDE OF PAGE#}
     <div class="row_page">
         <div class="col-md-4">
             <div class="container">
 
-                <div class="add_contacts">
-                    <form action="/select_contacts" method="POST" id="select_contacts">
-                         <select id = "select_contacts" name = "select_contacts" class="selectpicker" data-live-search="true" multiple>
-                            {% for contact in contacts %}
-                                <option >{{ contacts[contact]['first'] }} {{ contacts[contact]['number'] }}</option>
-                                <br>
-                            {% endfor %}
-                        </select>
-                        <button class="w3-bar w3-black" type="submit">Add</button>
-                    </form>
-                </div>
             </div>
-
         </div>
         <div class="col-md-4">
 
@@ -102,16 +91,23 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12 form-group">
-                                <button class="w3-bar w3-black" type="submit">Send</button>
+                                <form action="/send_message" method="POST" id="select_contacts">
+                                    <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
+                                        {% for contact in contacts %}
+                                            <option>{{ contacts[contact]['first'] }} {{ contacts[contact]['number'] }}</option>
+                                            <br>
+                                        {% endfor %}
+                                    </select>
+                                    <button class="w3-bar w3-black" type="submit">Send</button>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="col-md-4">
 
-            {# Adding Contact Form #}
+        {# Adding Contact Form #}
+        <div class="col-md-4">
             <div class="contact_form">
                 <form action="/add_contact" method="POST" id="contacts">
                     <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>

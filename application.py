@@ -3,8 +3,9 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask
 from flask import render_template, redirect, url_for, request, jsonify, Markup, flash
-import twilio.twiml
 import uuid
+
+from twilio.rest import TwilioRestClient
 
 application = Flask(__name__)
 
@@ -15,20 +16,40 @@ access_key = 'AKIAJSVUOAS23R7X3XZA'
 secret_key = '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'
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 table = dynamodb.Table('490final-userinfostore')
-callers = {
-    "+14158675309": "Curious George",
-    "+14158675310": "Boots",
-    "+14158675311": "Virgil",
-}
+
+# TWILIO INFO
+ACCOUNT_SID = "AC1a3f636ceb05e4559409a12976a0f9d6"
+AUTH_TOKEN = "22fa61aef0c4e56ffc8e333dd8f1bf33"
+client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+
 contacts_table = dynamodb.Table('css490-final-contacts-list')
 
 
 # this function will add contact to the contacts_database
 @application.route("/select_contacts", methods=['POST', 'GET'])
 def select_contacts():
-    select = request.form.getlist('select_contacts')
-    print("VALUES? =" + str(select))
+    contacts = request.form.getlist('select_contacts')
+    print("VALUES? =" + str(contacts))
     return redirect('/account_page')
+
+
+@application.route('/send_message', methods=['GET', 'POST'])
+def send_message():
+    contacts = request.form.getlist('select_contacts')
+    print("VALUES? =" + str(contacts))
+    print("You entered: {}".format(request.form["message"]))
+    for contact in contacts:
+        phone_number = contact.split()[-1]
+        try:
+            client.messages.create(
+                to=phone_number,
+                from_="	(206) 539-0317",
+                body=request.form["message"],
+                media_url="https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg",
+            )
+        except:
+            print('NOT VALID NUMBER' + contact.split()[-1])
+    return redirect('account_page')
 
 
 # this function will add contact to the contacts_database
@@ -191,24 +212,6 @@ def signup():
 #     return render_template('login.html')
 
 
-# method to render signup page
-@application.route('/send_message', methods=['GET', 'POST'])
-def send_message():
-    """Respond and greet the caller by name."""
-
-    from_number = request.values.get('From', None)
-    if from_number in callers:
-        message = callers[from_number] + ", thanks for the message!"
-    else:
-        message = "Monkey, thanks for the message!"
-
-    resp = twilio.twiml.Response()
-    print (resp.message(message))
-
-    return redirect('account_page')
-
-
 if __name__ == '__main__':
     application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1fzlJI/o+'
     application.run(debug=True)
-
