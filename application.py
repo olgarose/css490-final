@@ -21,16 +21,21 @@ table = dynamodb.Table('490final-userinfostore')
 ACCOUNT_SID = "AC1a3f636ceb05e4559409a12976a0f9d6"
 AUTH_TOKEN = "22fa61aef0c4e56ffc8e333dd8f1bf33"
 client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+twilio_phone = '2065390317'
 
 contacts_table = dynamodb.Table('css490-final-contacts-list')
 
 
-# this function will add contact to the contacts_database
-@application.route("/select_contacts", methods=['POST', 'GET'])
-def select_contacts():
-    contacts = request.form.getlist('select_contacts')
-    print("VALUES? =" + str(contacts))
-    return redirect('/account_page')
+@application.route('/account_page', methods=['GET', 'POST'])
+def account_page():
+    contacts = contacts_table.scan()['Items']
+    contacts_to_display = {}
+
+    for contact in contacts:
+        name = contact['first_name'] + ' ' + contact['last_name']
+        contacts_to_display[name] = contact['phone_number']
+
+    return render_template('account.html', contacts=contacts_to_display)
 
 
 @application.route('/send_message', methods=['GET', 'POST'])
@@ -43,7 +48,7 @@ def send_message():
         try:
             client.messages.create(
                 to=phone_number,
-                from_="	(206) 539-0317",
+                from_=twilio_phone,
                 body=request.form["message"],
                 media_url="https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg",
             )
@@ -67,14 +72,13 @@ def add_contact():
         return redirect("/account_page")
     else:
         user_id = str(uuid.uuid4())
-        if len(last_name) == 0:
-            new_item = {'contact_id': user_id, 'first_name': first_name, 'phone_number': phone}
-        else:
-            new_item = {'contact_id': user_id, 'first_name': first_name, 'last_name': last_name, 'phone_number': phone}
+        if not last_name:
+            last_name = ' '
+        contact = {'contact_id': user_id, 'first_name': first_name, 'last_name': last_name, 'phone_number': phone}
 
-        contacts_table.put_item(Item=new_item)
+    contacts_table.put_item(Item=contact)
 
-        return redirect("/account_page")
+    return redirect("/account_page")
 
 
 def create_table():
@@ -117,19 +121,6 @@ def create_table():
 def main():
     create_table()
     return render_template('index.html')
-
-
-# method to render login page
-@application.route('/account_page', methods=['GET', 'POST'])
-def account_page():
-    response = contacts_table.scan()
-    response = response['Items']
-    contacts_to_display = {}
-    x = 0
-    for i in response:
-        contacts_to_display[x] = {'first': i['first_name'], 'number': i['phone_number']}
-        x += 1
-    return render_template('account.html', contacts=contacts_to_display)
 
 
 # method to render login page
