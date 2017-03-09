@@ -1,6 +1,5 @@
 from __future__ import print_function
-import time
-import boto3, os, requests, shutil
+import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask
 from flask import render_template, redirect, url_for, request, jsonify, Markup, flash
@@ -27,41 +26,37 @@ contacts_table = dynamodb.Table('css490-final-contacts-list')
 # this function will add contact to the contacts_database
 @application.route("/select_contacts", methods=['POST', 'GET'])
 def select_contacts():
-
-    # request form comes here empty, option is not being addded to the dict!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    print(request.form)
+    select = request.form.getlist('select_contacts')
+    print("VALUES? =" + str(select))
     return redirect('/account_page')
-
-
 
 
 # this function will add contact to the contacts_database
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
     # getting names to query from webrequest
-    firstname = request.form['first_name']
-    lastname = request.form['last_name']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
     phone = request.form['phone']
 
     # if first name or phone number are empty - NEED TO DISPLAY ERROR MESSAGE
-    if len(firstname) == 0 or len(phone) == 0:
-        result_message = Markup("<h4 style=\"color: #e21f46;\">PLEASE ENTER VALUES IN ALL REQUIRED FILEDS</h4>")
+    if len(first_name) == 0 or len(phone) == 0:
+        result_message = Markup("<h4 style=\"color: #e21f46;\">PLEASE ENTER VALUES IN ALL REQUIRED FIELDS</h4>")
         flash(result_message)
         return redirect("/account_page")
     else:
-
         user_id = str(uuid.uuid4())
-        if len(lastname) == 0:
-            new_item = {'contact_id': user_id, 'first_name': firstname, 'phone_number': phone}
+        if len(last_name) == 0:
+            new_item = {'contact_id': user_id, 'first_name': first_name, 'phone_number': phone}
         else:
-            new_item = {'contact_id': user_id, 'first_name': firstname, 'last_name': lastname, 'phone_number': phone}
+            new_item = {'contact_id': user_id, 'first_name': first_name, 'last_name': last_name, 'phone_number': phone}
 
         contacts_table.put_item(Item=new_item)
 
         return redirect("/account_page")
 
 
-def createTable():
+def create_table():
     try:
         table = dynamodb.create_table(
             TableName='490final-userinfostore',
@@ -99,9 +94,7 @@ def createTable():
 # method to render main page
 @application.route('/')
 def main():
-    username = ''
-    password = ''
-    createTable()
+    create_table()
     return render_template('index.html')
 
 
@@ -126,7 +119,7 @@ def login_page():
 
 @application.route('/login', methods=['GET', 'POST'])
 def login():
-    createTable()
+    create_table()
     email_input = request.form.get("email")
     password_input = request.form.get("password")
 
@@ -143,7 +136,7 @@ def signup_page():
 # method to render sign up page
 @application.route('/signup', methods=['GET', 'POST'])
 def signup():
-    createTable()
+    create_table()
     email_input = request.form.get("email")
     password_input = request.form.get("password")
     password_verify_input = request.form.get("password_verify")
@@ -212,19 +205,10 @@ def send_message():
     resp = twilio.twiml.Response()
     print (resp.message(message))
 
-    return render_template('account.html')
+    return redirect('account_page')
 
 
 if __name__ == '__main__':
     application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1fzlJI/o+'
     application.run(debug=True)
 
-    # Uploading data
-    # step 0, Create s3 private bucket
-    #
-    # step 1, copy data to s3 private bucket
-    #
-    # step 2, parse data, skip re-download since we know we're not changing private bucket data
-    # outside of this program
-    #
-    # step 3, populate table from input file
