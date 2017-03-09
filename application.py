@@ -25,14 +25,23 @@ contacts_table = dynamodb.Table('css490-final-contacts-list')
 
 
 # this function will add contact to the contacts_database
+@application.route("/select_contacts", methods=['POST', 'GET'])
+def select_contacts():
+
+    # request form comes here empty, option is not being addded to the dict!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    print(request.form)
+    return redirect('/account_page')
+
+
+
+
+# this function will add contact to the contacts_database
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
     # getting names to query from webrequest
     firstname = request.form['first_name']
     lastname = request.form['last_name']
     phone = request.form['phone']
-    print(len(firstname))
-    print(len(phone))
 
     # if first name or phone number are empty - NEED TO DISPLAY ERROR MESSAGE
     if len(firstname) == 0 or len(phone) == 0:
