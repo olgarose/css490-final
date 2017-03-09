@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+{#<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">#}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 <style>
     body, h1 {
         font-family: "Raleway", sans-serif
@@ -13,6 +14,11 @@
 
     body, html {
         height: 100%
+    }
+
+    #bootstrap-overrides input, button, select,
+    textarea, input, optgroup {
+        color: #000000;
     }
 
     .bgimg {
@@ -26,23 +32,24 @@
         width: 150%;
     }
 
-    .row_page{
+    .row_page {
         position: absolute;
         top: 40%;
     }
 
-    .contact_form{
+    .contact_form {
 
         padding-right: 30%;
         padding-left: 20%;
     }
-    .add_contacts{
+
+    .add_contacts {
 
         padding-right: 70%;
         padding-left: 10%;
     }
 
-    .selectpicker{
+    .selectpicker {
         width: 100%;
     }
 
@@ -74,21 +81,19 @@
     <!--</div>-->
 
 
-
-
     <div class="row_page">
         <div class="col-md-4">
             <!--{# Navigation Bar #}-->
             <div class="container">
                 <!--<div class="navbar-header">-->
-                    <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"-->
-                            <!--aria-expanded="false" aria-controls="navbar">-->
-                        <!--<span class="sr-only">Toggle navigation</span>-->
-                        <!--<span class="icon-bar"></span>-->
-                        <!--<span class="icon-bar"></span>-->
-                        <!--<span class="icon-bar"></span>-->
-                    <!--</button>-->
-                    <!--<a class="navbar-brand" href="#">My scratchpad</a>-->
+                <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"-->
+                <!--aria-expanded="false" aria-controls="navbar">-->
+                <!--<span class="sr-only">Toggle navigation</span>-->
+                <!--<span class="icon-bar"></span>-->
+                <!--<span class="icon-bar"></span>-->
+                <!--<span class="icon-bar"></span>-->
+                <!--</button>-->
+                <!--<a class="navbar-brand" href="#">My scratchpad</a>-->
                 <!--</div>-->
                 <!--</nav>-->
 
@@ -101,17 +106,13 @@
                         <!--<input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>-->
 
 
-
-
-
-
-
                         <select class="selectpicker" multiple data-selected-text-format="count > 3">
                             <!--<option>Ketchup</option>-->
                             <!--<option>Relish</option>-->
                             <!--<option>Onions</option>-->
                             {% for contact in contacts %}
-                                <option>{{ contacts[contact]['first'] }}        {{ contacts[contact]['number'] }}</option>  <br>
+                                <option>{{ contacts[contact]['first'] }} {{ contacts[contact]['number'] }}</option>
+                                <br>
                             {% endfor %}
 
                         </select>
@@ -122,7 +123,7 @@
 
         </div>
         <div class="col-md-4">
-                {# Message Box #}
+            {# Message Box #}
             <div class="messagebox">
                 <form action="/send_message" method=post>
                     <div class="col-md-8">

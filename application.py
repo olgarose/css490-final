@@ -130,6 +130,7 @@ def login():
 def signup_page():
     return render_template('signup.html')
 
+
 # method to render sign up page
 @application.route('/signup', methods=['GET', 'POST'])
 def signup():
