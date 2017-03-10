@@ -55,8 +55,6 @@ def account_page():
 @application.route('/send_message', methods=['GET', 'POST'])
 def send_message():
     contacts = request.form.getlist('select_contacts')
-    print("VALUES? =" + str(contacts))
-    print("You entered: {}".format(request.form["message"]))
     for contact in contacts:
         phone_number = contact.split()[-1]
         try:
@@ -70,6 +68,17 @@ def send_message():
             print('NOT VALID NUMBER' + contact.split()[-1])
     return redirect('account_page')
 
+
+@application.route('/edit_contacts', methods=['GET', 'POST'])
+def edit_contacts_page():
+    contacts = contacts_table.scan()['Items']
+    contacts_to_display = {}
+
+    for contact in contacts:
+        name = contact['first_name'] + ' ' + contact['last_name']
+        contacts_to_display[name] = contact['phone_number']
+
+    return render_template('edit_contacts.html', contacts=contacts_to_display)
 
 # this function will add contact to the contacts_database
 @application.route("/add_contact", methods=['POST', 'GET'])
@@ -156,6 +165,7 @@ def login():
     # print("email: ", email_input, "\npassword: ", password_input)
     # return render_template('login.html')
     return redirect("/account_page")
+
 
 # method to render login page
 @application.route('/signup_page', methods=['GET', 'POST'])
