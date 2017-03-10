@@ -113,7 +113,7 @@ def add_contact():
 
     contacts_table.put_item(Item=contact)
 
-    return redirect("/account_page")
+    return redirect("/edit_contacts")
 
 
 def create_table():
