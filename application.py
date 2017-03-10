@@ -154,8 +154,8 @@ def login():
     password_input = request.form.get("password")
 
     # print("email: ", email_input, "\npassword: ", password_input)
-    return render_template('login.html')
-
+    # return render_template('login.html')
+    return redirect("/account_page")
 
 # method to render login page
 @application.route('/signup_page', methods=['GET', 'POST'])
