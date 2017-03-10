@@ -37,11 +37,13 @@
     }
 
     .contact_form {
+
         padding-right: 30%;
         padding-left: 20%;
     }
 
-    .add_contacts {
+    .select_contacts{
+
         padding-right: 70%;
         padding-left: 10%;
     }
@@ -49,6 +51,7 @@
     .selectpicker {
         width: 100%;
     }
+
 </style>
 <body>
 
@@ -70,12 +73,23 @@
     <div class="w3-display-topleft w3-padding-large w3-xlarge">
         Account Page
     </div>
-    {# BLANK LEFT SIDE OF PAGE#}
     <div class="row_page">
         <div class="col-md-4">
             <div class="container">
 
+                <div class="select_contacts">
+                    <form action="/select_contacts" method="POST" id="select_contacts">
+                        <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
+                            {% for name, number in contacts.items() %}
+                                <option>{{ name }} {{ number }}</option>
+                                <br>
+                            {% endfor %}
+                        </select>
+                        <button class="w3-bar w3-black" type="submit">Remove</button>
+                    </form>
+                </div>
             </div>
+
         </div>
         <div class="col-md-4">
 
@@ -88,22 +102,16 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12 form-group">
-                                    <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
-                                        {% for name, number in contacts.items() %}
-                                            <option>{{ name }} {{ number }}</option>
-                                            <br>
-                                        {% endfor %}
-                                    </select>
-                                    <button class="w3-bar w3-black" type="submit">Send</button>
+                                <button class="w3-bar w3-black" type="submit">Send</button>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-
-        {# Adding Contact Form #}
         <div class="col-md-4">
+
+            {# Adding Contact Form #}
             <div class="contact_form">
                 <form action="/add_contact" method="POST" id="contacts">
                     <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
@@ -125,3 +133,4 @@
 
 </body>
 </html>
+

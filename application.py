@@ -1,11 +1,11 @@
 from __future__ import print_function
-import time
-import boto3, os, requests, shutil
+import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask
 from flask import render_template, redirect, url_for, request, jsonify, Markup, flash
-import twilio.twiml
 import uuid
+
+from twilio.rest import TwilioRestClient
 
 application = Flask(__name__)
 
@@ -16,43 +16,72 @@ access_key = 'AKIAJSVUOAS23R7X3XZA'
 secret_key = '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'
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 table = dynamodb.Table('490final-userinfostore')
-callers = {
-    "+14158675309": "Curious George",
-    "+14158675310": "Boots",
-    "+14158675311": "Virgil",
-}
+
+# TWILIO INFO
+ACCOUNT_SID = "AC1a3f636ceb05e4559409a12976a0f9d6"
+AUTH_TOKEN = "22fa61aef0c4e56ffc8e333dd8f1bf33"
+client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+twilio_phone = '2065390317'
+
 contacts_table = dynamodb.Table('css490-final-contacts-list')
+
+
+@application.route('/account_page', methods=['GET', 'POST'])
+def account_page():
+    contacts = contacts_table.scan()['Items']
+    contacts_to_display = {}
+
+    for contact in contacts:
+        name = contact['first_name'] + ' ' + contact['last_name']
+        contacts_to_display[name] = contact['phone_number']
+
+    return render_template('account.html', contacts=contacts_to_display)
+
+
+@application.route('/send_message', methods=['GET', 'POST'])
+def send_message():
+    contacts = request.form.getlist('select_contacts')
+    print("VALUES? =" + str(contacts))
+    print("You entered: {}".format(request.form["message"]))
+    for contact in contacts:
+        phone_number = contact.split()[-1]
+        try:
+            client.messages.create(
+                to=phone_number,
+                from_=twilio_phone,
+                body=request.form["message"],
+                media_url="https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg",
+            )
+        except:
+            print('NOT VALID NUMBER' + contact.split()[-1])
+    return redirect('account_page')
 
 
 # this function will add contact to the contacts_database
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
     # getting names to query from webrequest
-    firstname = request.form['first_name']
-    lastname = request.form['last_name']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
     phone = request.form['phone']
-    print(len(firstname))
-    print(len(phone))
 
     # if first name or phone number are empty - NEED TO DISPLAY ERROR MESSAGE
-    if len(firstname) == 0 or len(phone) == 0:
-        result_message = Markup("<h4 style=\"color: #e21f46;\">PLEASE ENTER VALUES IN ALL REQUIRED FILEDS</h4>")
+    if len(first_name) == 0 or len(phone) == 0:
+        result_message = Markup("<h4 style=\"color: #e21f46;\">PLEASE ENTER VALUES IN ALL REQUIRED FIELDS</h4>")
         flash(result_message)
         return redirect("/account_page")
     else:
-
         user_id = str(uuid.uuid4())
-        if len(lastname) == 0:
-            new_item = {'contact_id': user_id, 'first_name': firstname, 'phone_number': phone}
-        else:
-            new_item = {'contact_id': user_id, 'first_name': firstname, 'last_name': lastname, 'phone_number': phone}
+        if not last_name:
+            last_name = ' '
+        contact = {'contact_id': user_id, 'first_name': first_name, 'last_name': last_name, 'phone_number': phone}
 
-        contacts_table.put_item(Item=new_item)
+    contacts_table.put_item(Item=contact)
 
-        return redirect("/account_page")
+    return redirect("/account_page")
 
 
-def createTable():
+def create_table():
     try:
         table = dynamodb.create_table(
             TableName='490final-userinfostore',
@@ -90,16 +119,8 @@ def createTable():
 # method to render main page
 @application.route('/')
 def main():
-    username = ''
-    password = ''
-    createTable()
+    create_table()
     return render_template('index.html')
-
-
-# method to render login page
-@application.route('/account_page', methods=['GET', 'POST'])
-def account_page():
-    return render_template('account.html')
 
 
 # method to render login page
@@ -110,7 +131,7 @@ def login_page():
 
 @application.route('/login', methods=['GET', 'POST'])
 def login():
-    createTable()
+    create_table()
     email_input = request.form.get("email")
     password_input = request.form.get("password")
 
@@ -123,10 +144,11 @@ def login():
 def signup_page():
     return render_template('signup.html')
 
+
 # method to render sign up page
 @application.route('/signup', methods=['GET', 'POST'])
 def signup():
-    createTable()
+    create_table()
     email_input = request.form.get("email")
     password_input = request.form.get("password")
     password_verify_input = request.form.get("password_verify")
@@ -181,33 +203,6 @@ def signup():
 #     return render_template('login.html')
 
 
-# method to render signup page
-@application.route('/send_message', methods=['GET', 'POST'])
-def send_message():
-    """Respond and greet the caller by name."""
-
-    from_number = request.values.get('From', None)
-    if from_number in callers:
-        message = callers[from_number] + ", thanks for the message!"
-    else:
-        message = "Monkey, thanks for the message!"
-
-    resp = twilio.twiml.Response()
-    print (resp.message(message))
-
-    return render_template('account.html')
-
-
 if __name__ == '__main__':
     application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1fzlJI/o+'
     application.run(debug=True)
-
-    # Uploading data
-    # step 0, Create s3 private bucket
-    #
-    # step 1, copy data to s3 private bucket
-    #
-    # step 2, parse data, skip re-download since we know we're not changing private bucket data
-    # outside of this program
-    #
-    # step 3, populate table from input file
