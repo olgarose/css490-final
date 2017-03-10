@@ -78,12 +78,19 @@ def edit_contacts_page():
         name = contact['first_name'] + ' ' + contact['last_name']
         contacts_to_display[name] = contact['phone_number']
 
-    return render_template('edit_contacts.html', contacts=contacts_to_display)
+    return render_template('easier_edit.html', contacts=contacts_to_display)
 
 
 @application.route('/edit_contact', methods=['GET', 'POST'])
 def edit_contact():
-    print('First name ' + request.form['first_name'])
+    contacts = request.form.getlist('select_contacts')
+    print('Returned ' + str(contacts))
+    for contact in contacts:
+        contacts = contacts_table.scan()['Items']
+        print('Contacts in table ' + str(contacts))
+        print('Contact phone ' + contact.split()[-1])
+        print('Contact first name ' + contact.split()[0])
+
     return redirect('edit_contacts')
 
 
@@ -151,10 +158,6 @@ def create_table():
 def main():
     create_table()
     return render_template('index.html')
-
-
-
-
 
 
 # method to render login page
