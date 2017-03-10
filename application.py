@@ -1,16 +1,22 @@
 from __future__ import print_function
-import boto3
+import boto3, flask_login
 from boto3.dynamodb.conditions import Key, Attr
-from flask import Flask
-from flask import render_template, redirect, url_for, request, jsonify, Markup, flash
+from flask import Flask, render_template, url_for, request, Markup, flash, redirect, session, abort
 import uuid
-
 from twilio.rest import TwilioRestClient
+from tabledef import *
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 
 application = Flask(__name__)
 
 username = ''
 password = ''
+
+login_manager = flask_login.LoginManager()
+login_manager.init_app(application)
+login_manager.login_view = "login"
 
 access_key = 'AKIAJSVUOAS23R7X3XZA'
 secret_key = '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'
@@ -119,88 +125,82 @@ def create_table():
 # method to render main page
 @application.route('/')
 def main():
-    create_table()
-    return render_template('index.html')
-
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('index.html')
 
 # method to render login page
 @application.route('/login_page', methods=['GET', 'POST'])
 def login_page():
+    if request.method == 'POST':
+        engine = create_engine('sqlite:///tutorial.db', echo=True)
+        #create session
+        Session = sessionmaker(bind=engine)
+        s = Session()
+        
+        email_input = request.form.get("email")
+        password_input = request.form.get("password")
+        
+        query = s.query(User).filter(User.username.in_([email_input]), User.password.in_([password_input])).first()
+        # print("\n\nquery: ", query, "\n\n")
+        if query:
+            session['logged_in'] = True
+            login_success = 'Login Successful!'
+            print(login_success)
+            return main()
+        else:
+            wrong_cred_err = Markup("<p> Invalid credentials<p>")
+            flash(wrong_cred_err)
+            return render_template('login.html')
+        return main()
     return render_template('login.html')
 
+@application.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session['logged_in'] = False
+    return render_template('index logged out.html')
 
-@application.route('/login', methods=['GET', 'POST'])
-def login():
-    create_table()
-    email_input = request.form.get("email")
-    password_input = request.form.get("password")
-
-    # print("email: ", email_input, "\npassword: ", password_input)
-    return render_template('login.html')
-
-
-# method to render login page
+# method to render signup page
 @application.route('/signup_page', methods=['GET', 'POST'])
 def signup_page():
+    if request.method == 'POST':
+        engine = create_engine('sqlite:///tutorial.db', echo=True)
+        #create session
+        Session = sessionmaker(bind=engine)
+        s = Session()
+        
+        #pull in data from form
+        email_input = request.form.get("email")
+        password_input = request.form.get("password")
+        password_verify_input = request.form.get("password_verify")
+        first_name_input = request.form.get("first_name")
+        last_name_input = request.form.get("last_name")
+        
+        if password_input != password_verify_input:
+            print("Mismatched passwords")
+            password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
+            flash(password_error)
+            return render_template('signup.html')
+        
+        try:
+            query = s.query(User).filter(User.username.in_([email_input]))
+            result = query.first()
+            if result:
+                print("Duplicate email")
+                dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
+                flash(dup_email_error)
+                return render_template('signup.html')
+        except:
+            print("Query Error")
+            return render_template('signup.html')
+    
+        user = User(email_input, password_input, email_input, first_name_input, last_name_input)
+        s.add(user)
+        s.commit()
+        
+        return render_template('login.html')
     return render_template('signup.html')
-
-
-# method to render sign up page
-@application.route('/signup', methods=['GET', 'POST'])
-def signup():
-    create_table()
-    email_input = request.form.get("email")
-    password_input = request.form.get("password")
-    password_verify_input = request.form.get("password_verify")
-    first_name_input = request.form.get("first_name")
-    last_name_input = request.form.get("last_name")
-
-    if password_input != password_verify_input:
-        password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
-        flash(password_error)
-        return render_template('signup.html')
-
-    response = table.query(KeyConditionExpression=Key('email').eq(email_input))
-    items = response['Items']
-    if len(items) > 0:
-        dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
-        flash(dup_email_error)
-        return render_template('signup.html')
-
-    dict = {'email': email_input, 'password': password_input,
-            'first_name': first_name_input, 'last_name': last_name_input}
-    table.put_item(Item=dict)
-
-    return render_template('login.html')
-
-
-# # method to render register page
-# @application.route('/register', methods=['GET', 'POST'])
-# def register():
-#     createTable()
-#     email_input = request.form.get("email")
-#     password_input = request.form.get("password")
-#     password_verify_input = request.form.get("password_verify")
-#     first_name_input = request.form.get("first_name")
-#     last_name_input = request.form.get("last_name")
-#
-#     if password_input != password_verify_input:
-#         password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
-#         flash(password_error)
-#         return render_template('signup.html')
-#
-#     response = table.query(KeyConditionExpression=Key('email').eq(email_input))
-#     items = response['Items']
-#     if len(items) > 0:
-#         dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
-#         flash(dup_email_error)
-#         return render_template('signup.html')
-#
-#     dict={'email': email_input, 'password': password_input,
-#         'first_name': first_name_input, 'last_name': last_name_input}
-#     table.put_item(Item=dict)
-#
-#     return render_template('login.html')
 
 
 if __name__ == '__main__':

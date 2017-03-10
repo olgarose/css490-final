@@ -27,7 +27,7 @@ body, html {height: 100%}
     <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
     <a href="{{ url_for('login_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>
     <a href="{{ url_for('signup_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGNUP</a>
-    <a href="{{ url_for('account_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">ACCOUNT</a>
+    <a href='/logout' class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGOUT</a>
     <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
   </div>
 </div>
@@ -42,7 +42,7 @@ body, html {height: 100%}
         Login Page
   </div>
   <div class="w3-display-middle">
-    <h1 class="w3-jumbo w3-animate-top">WELCOME BACK</h1>
+    <h1 class="w3-xlarge w3-animate-top">WELCOME BACK</h1>
     <!--<hr class="w3-border-grey" style="margin:auto;width:40%">-->
     <!--<p class="w3-large w3-center">7 days left</p>-->
       <!--<form action = "/login" method = post>-->
@@ -52,19 +52,16 @@ body, html {height: 100%}
           <!--<p align="center"><input align="middle" type="password" name="password" placeholder="Password*"required></p>-->
           <!--<p align="center"><input align="center" type="submit" value="Login"></p>-->
       <!--</form>-->
-
-    <div class="w3-display-middle">
-      <form action="/login" method=post>
-        <!--<div class="flashes" align="center">-->
-          <!--{% for message in get_flashed_messages() %}-->
-            <!--{{message}}-->
-          <!--{% endfor %}-->
-        <!--</div>-->
+    <form action="{{ url_for('login_page') }}" method=post>
+        <div class="w3-panel w3-red" align="center">
+          {% for message in get_flashed_messages() %}
+            {{message}}
+          {% endfor %}
+        </div>
         <input class="w3-input" name="email" type="email" placeholder="Email Address*" required>
         <input class="w3-input" name="password" type="password"  placeholder="Password*" required>
         <button class="w3-bar w3-black" type="submit">Login</button>
-      </form>
-    </div>
+    </form>
 
 
 
