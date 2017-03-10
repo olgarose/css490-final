@@ -84,12 +84,19 @@ def edit_contacts_page():
 @application.route('/edit_contact', methods=['GET', 'POST'])
 def edit_contact():
     contacts = request.form.getlist('select_contacts')
-    print('Returned ' + str(contacts))
-    for contact in contacts:
-        contacts = contacts_table.scan()['Items']
-        print('Contacts in table ' + str(contacts))
-        print('Contact phone ' + contact.split()[-1])
-        print('Contact first name ' + contact.split()[0])
+    all_contacts = contacts_table.scan()['Items']
+
+    for c in contacts:
+        phone = str(c.split()[-1])
+        name = str(c.split()[0])
+
+        for c in all_contacts:
+            for attribute in c:
+                if attribute == 'phone_number' and c[attribute] == phone:
+                    if c['first_name'] == name:
+                        contacts_table.delete_item(Key={'contact_id': c['contact_id']})
+                        print("name is " + name)
+                        print("phone num is " + c[attribute])
 
     return redirect('edit_contacts')
 
