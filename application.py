@@ -1,12 +1,13 @@
 from __future__ import print_function
-import boto3
+import boto3, flask_login, requests
 from boto3.dynamodb.conditions import Key, Attr
-from flask import Flask
-from flask import render_template, redirect, url_for, request, jsonify, Markup, flash
+from flask import Flask, render_template, url_for, request, Markup, flash, redirect, session, abort
 import uuid
-
+from tabledef import *
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user 
 from twilio.rest import TwilioRestClient
-import twilio.twiml
 
 application = Flask(__name__)
 
@@ -17,6 +18,9 @@ access_key = 'AKIAJSVUOAS23R7X3XZA'
 secret_key = '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'
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 table = dynamodb.Table('490final-userinfostore')
+login_manager = flask_login.LoginManager()
+login_manager.init_app(application)
+login_manager.login_view = "login"
 
 # TWILIO INFO
 ACCOUNT_SID = "AC1a3f636ceb05e4559409a12976a0f9d6"
@@ -79,7 +83,7 @@ def edit_contacts_page():
         name = contact['first_name'] + ' ' + contact['last_name']
         contacts_to_display[name] = contact['phone_number']
 
-    return render_template('easier_edit.html', contacts=contacts_to_display)
+    return render_template('edit_contacts.html', contacts=contacts_to_display)
 
 
 @application.route('/edit_contact', methods=['GET', 'POST'])
@@ -100,7 +104,6 @@ def edit_contact():
                         contacts_table.delete_item(Key={'contact_id': c['contact_id']})
                         print("name is " + name)
                         print("phone num is " + c[attribute])
-
     return redirect('edit_contacts')
 
 
@@ -125,7 +128,7 @@ def add_contact():
 
     contacts_table.put_item(Item=contact)
 
-    return redirect("/account_page")
+    return redirect("/edit_contacts")
 
 
 def create_table():
@@ -163,101 +166,85 @@ def create_table():
         return
 
 
-def response_message():
-    """Respond to incoming calls with a simple text message."""
-
-    resp = twilio.twiml.Response()
-    resp.message("Hello, Mobile Monkey")
-    return str(resp)
-
-
 # method to render main page
-@application.route('/', methods=['GET', 'POST'])
+@application.route('/')
 def main():
-    create_table()
-    response_message()
-    return render_template('index.html')
-
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('index.html')
 
 # method to render login page
 @application.route('/login_page', methods=['GET', 'POST'])
 def login_page():
+    if request.method == 'POST':
+        engine = create_engine('sqlite:///tutorial.db', echo=True)
+        #create session
+        Session = sessionmaker(bind=engine)
+        s = Session()
+
+        email_input = request.form.get("email")
+        password_input = request.form.get("password")
+
+        query = s.query(User).filter(User.username.in_([email_input]), User.password.in_([password_input])).first()
+        # print("\n\nquery: ", query, "\n\n")
+        if query:
+            session['logged_in'] = True
+            login_success = 'Login Successful!'
+            print(login_success)
+            return main()
+        else:
+            wrong_cred_err = Markup("<p> Invalid credentials<p>")
+            flash(wrong_cred_err)
+            return render_template('login.html')
+        return redirect("/account_page")
     return render_template('login.html')
 
+@application.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session['logged_in'] = False
+    return redirect('/')
 
-@application.route('/login', methods=['GET', 'POST'])
-def login():
-    create_table()
-    email_input = request.form.get("email")
-    password_input = request.form.get("password")
-
-    # print("email: ", email_input, "\npassword: ", password_input)
-    # return render_template('login.html')
-    return redirect("/account_page")
-
-
-# method to render login page
+# method to render signup page
 @application.route('/signup_page', methods=['GET', 'POST'])
 def signup_page():
+    if request.method == 'POST':
+        engine = create_engine('sqlite:///tutorial.db', echo=True)
+        #create session
+        Session = sessionmaker(bind=engine)
+        s = Session()
+
+        #pull in data from form
+        email_input = request.form.get("email")
+        password_input = request.form.get("password")
+        password_verify_input = request.form.get("password_verify")
+        first_name_input = request.form.get("first_name")
+        last_name_input = request.form.get("last_name")
+
+        if password_input != password_verify_input:
+            print("Mismatched passwords")
+            password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
+            flash(password_error)
+            return render_template('signup.html')
+
+        try:
+            query = s.query(User).filter(User.username.in_([email_input]))
+            result = query.first()
+            if result:
+                print("Duplicate email")
+                dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
+                flash(dup_email_error)
+                return render_template('signup.html')
+        except:
+            print("Query Error")
+            return render_template('signup.html')
+
+        user = User(email_input, password_input, email_input, first_name_input, last_name_input)
+        s.add(user)
+        s.commit()
+
+        return render_template('login.html')
     return render_template('signup.html')
-
-
-# method to render sign up page
-@application.route('/signup', methods=['GET', 'POST'])
-def signup():
-    create_table()
-    email_input = request.form.get("email")
-    password_input = request.form.get("password")
-    password_verify_input = request.form.get("password_verify")
-    first_name_input = request.form.get("first_name")
-    last_name_input = request.form.get("last_name")
-
-    if password_input != password_verify_input:
-        password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
-        flash(password_error)
-        return render_template('signup.html')
-
-    response = table.query(KeyConditionExpression=Key('email').eq(email_input))
-    items = response['Items']
-    if len(items) > 0:
-        dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
-        flash(dup_email_error)
-        return render_template('signup.html')
-
-    dict = {'email': email_input, 'password': password_input,
-            'first_name': first_name_input, 'last_name': last_name_input}
-    table.put_item(Item=dict)
-
-    return render_template('login.html')
-
-
-# # method to render register page
-# @application.route('/register', methods=['GET', 'POST'])
-# def register():
-#     createTable()
-#     email_input = request.form.get("email")
-#     password_input = request.form.get("password")
-#     password_verify_input = request.form.get("password_verify")
-#     first_name_input = request.form.get("first_name")
-#     last_name_input = request.form.get("last_name")
-#
-#     if password_input != password_verify_input:
-#         password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
-#         flash(password_error)
-#         return render_template('signup.html')
-#
-#     response = table.query(KeyConditionExpression=Key('email').eq(email_input))
-#     items = response['Items']
-#     if len(items) > 0:
-#         dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
-#         flash(dup_email_error)
-#         return render_template('signup.html')
-#
-#     dict={'email': email_input, 'password': password_input,
-#         'first_name': first_name_input, 'last_name': last_name_input}
-#     table.put_item(Item=dict)
-#
-#     return render_template('login.html')
 
 
 if __name__ == '__main__':
