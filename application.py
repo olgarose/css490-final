@@ -80,6 +80,13 @@ def edit_contacts_page():
 
     return render_template('edit_contacts.html', contacts=contacts_to_display)
 
+
+@application.route('/edit_contact', methods=['GET', 'POST'])
+def edit_contact():
+    print('First name ' + request.form['first_name'])
+    return redirect('edit_contacts')
+
+
 # this function will add contact to the contacts_database
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
