@@ -59,7 +59,7 @@ body, html {height: 100%}
     <h1 class="w3-jumbo w3-animate-top" style="background: black;">WELCOME BACK</h1>
   </div>
   <div class="login_box">
-    <form action="/login" method=post>
+    <form action="{{ url_for('login_page') }}" method=post>
       <input class="w3-input" name="email" type="email" placeholder="Email Address*" required>
       <input class="w3-input" name="password" type="password"  placeholder="Password*" required>
       <button class="w3-bar w3-black" type="submit">Login</button>
