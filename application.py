@@ -6,6 +6,7 @@ from flask import render_template, redirect, url_for, request, jsonify, Markup, 
 import uuid
 
 from twilio.rest import TwilioRestClient
+import twilio.twiml
 
 application = Flask(__name__)
 
@@ -146,15 +147,20 @@ def create_table():
         return
 
 
+def response_message():
+    """Respond to incoming calls with a simple text message."""
+
+    resp = twilio.twiml.Response()
+    resp.message("Hello, Mobile Monkey")
+    return str(resp)
+
+
 # method to render main page
-@application.route('/')
+@application.route('/', methods=['GET', 'POST'])
 def main():
     create_table()
+    response_message()
     return render_template('index.html')
-
-
-
-
 
 
 # method to render login page
