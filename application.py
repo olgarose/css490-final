@@ -85,12 +85,14 @@ def edit_contacts_page():
 @application.route('/edit_contact', methods=['GET', 'POST'])
 def edit_contact():
     contacts = request.form.getlist('select_contacts')
+    print('Contacts' + str(contacts))
     all_contacts = contacts_table.scan()['Items']
 
     for c in contacts:
-        phone = str(c.split()[-1])
-        name = str(c.split()[0])
-
+        phone = str(c.split('|')[-1]).strip()
+        name = str(c.split()[0]).strip()
+        print('Phone is ' + phone)
+        print('Name is ' + name)
         for c in all_contacts:
             for attribute in c:
                 if attribute == 'phone_number' and c[attribute] == phone:
