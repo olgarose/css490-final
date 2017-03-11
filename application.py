@@ -74,7 +74,7 @@ def edit_contacts_page():
             name = contact['first_name'] + ' ' + contact['last_name']
             contacts_to_display[name] = contact['phone_number']
 
-    return render_template('easier_edit.html', contacts=contacts_to_display)
+    return render_template('edit_contacts.html', contacts=contacts_to_display)
 
 
 @application.route('/edit_contact', methods=['GET', 'POST'])
