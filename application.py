@@ -106,14 +106,7 @@ def edit_contact():
                             'user': username,
                             'contact_id': c['contact_id']
                         }
-                        print('Username is ' + username)
-                        print('Contact id is ' + c['contact_id'])
-                        get_item = contacts_table.get_item(Key=key)
-                        print('Get item is ' + str(get_item))
-                        response = contacts_table.delete_item(Key=key)
-                        print('response is ' + str(response))
-                        print("name is " + name)
-                        print("phone num is " + c[attribute])
+                        contacts_table.delete_item(Key=key)
     return redirect('edit_contacts')
 
 
