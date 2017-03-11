@@ -10,13 +10,14 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 from twilio.rest import TwilioRestClient
 
 application = Flask(__name__)
+application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1sdfsdgsdsdgaJKJL3rq3d3wdod3qfzlJI/o+'
 
 username = 'example@example.com'
 password = ''
 
-access_key = 'AKIAJSVUOAS23R7X3XZA'
-secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1fzlJI/o+'
-dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+access_key = 'AKIAILAGYSYR5WRQ3A7A'
+secret_key = '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'
+dynamodb = boto3.resource('dynamodb', aws_access_key_id=access_key, aws_secret_access_key=secret_key, region_name='us-west-2')
 table = dynamodb.Table('490final-userinfostore')
 login_manager = flask_login.LoginManager()
 login_manager.init_app(application)
@@ -33,6 +34,8 @@ contacts_table = dynamodb.Table('css490-final-contacts-list')
 
 @application.route('/account_page', methods=['GET', 'POST'])
 def account_page():
+    if not session.get('logged_in'):
+        return render_template('login.html')
     contacts = contacts_table.scan()['Items']
     contacts_to_display = {}
 
@@ -245,5 +248,5 @@ def signup_page():
 
 
 if __name__ == '__main__':
-    application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1fzlJI/o+'
+    # session['logged_in'] = False
     application.run(debug=True)

@@ -34,12 +34,15 @@
 
     .contact_form {
         width: 150%;
-        position: absolute;
     }
 
     .add_contacts {
         padding-right: 70%;
         padding-left: 10%;
+    }
+
+    .remove_contacts {
+        padding-top: 25%;
     }
 
     .selectpicker {
@@ -58,13 +61,8 @@
 <!-- Navbar -->
 <div class="w3-top">
     <div class="w3-bar w3-black w3-card-2">
-        <!--<a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right"-->
-           <!--href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i-->
-                <!--class="fa fa-bars"></i></a>-->
         <a href="{{ url_for('account_page') }}" class="w3-bar-item w3-button w3-padding-large">MESSAGE HUB</a>
         <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
-        <!--<a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i-->
-                <!--class="fa fa-search"></i></a>-->
     </div>
 </div>
 
@@ -79,34 +77,41 @@
 
             </div>
         </div>
+
+
         <div class="col-md-4">
 
             {# Adding Contact Form #}
-            <div class="col-md-4">
-                <div class="contact_form">
-                    <form action="/add_contact" method="POST" id="contacts">
+            <div class="contact_form">
+                <form action="/add_contact" method="POST" id="contacts">
+                    <div class="col-md-8">
                         <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
                         <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
                         <input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>
-                        <br>
-                        <br>
                         <button class="w3-bar w3-black" type="submit">Add</button>
-                    </form>
+                    </div>
+                </form>
+
+                <div class="remove_contacts">
+                    <div class="col-md-8">
+                        <form action="/edit_contact" method="POST" id="select_contacts">
+                            <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
+                                {% for name, number in contacts.items() %}
+                                    <option>{{ name }} | {{ number }}</option>
+                                    <br>
+                                {% endfor %}
+                            </select>
+                            <button class="w3-bar w3-black" type="submit">Remove</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
+
+        </div>
         <div class="col-md-4">
-            <div class="select_contacts">
-                <form action="/edit_contact" method="POST" id="select_contacts">
-                    <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
-                        {% for name, number in contacts.items() %}
-                            <option>{{ name }} | {{ number }}</option>
-                            <br>
-                        {% endfor %}
-                    </select>
-                    <button class="w3-bar w3-black" type="submit">Remove</button>
-                </form>
+            <div class="container">
+
             </div>
         </div>
     </div>
