@@ -83,15 +83,15 @@ def edit_contacts_page():
         name = contact['first_name'] + ' ' + contact['last_name']
         contacts_to_display[name] = contact['phone_number']
 
-    return render_template('edit_contacts.html', contacts=contacts_to_display)
+    return render_template('easier_edit.html', contacts=contacts_to_display)
 
 
 @application.route('/edit_contact', methods=['GET', 'POST'])
-def edit_contact():
+def remove_contact():
     contacts = request.form.getlist('select_contacts')
     print('Contacts' + str(contacts))
     all_contacts = contacts_table.scan()['Items']
-
+    print('User name is ' + username)
     for c in contacts:
         phone = str(c.split('|')[-1]).strip()
         name = str(c.split()[0]).strip()
@@ -174,6 +174,7 @@ def main():
     else:
         return render_template('index.html')
 
+
 # method to render login page
 @application.route('/login_page', methods=['GET', 'POST'])
 def login_page():
@@ -185,6 +186,9 @@ def login_page():
 
         email_input = request.form.get("email")
         password_input = request.form.get("password")
+
+        global username
+        username = email_input
 
         query = s.query(User).filter(User.username.in_([email_input]), User.password.in_([password_input])).first()
         # print("\n\nquery: ", query, "\n\n")
@@ -200,10 +204,12 @@ def login_page():
         return redirect("/account_page")
     return render_template('login.html')
 
+
 @application.route('/logout', methods=['GET', 'POST'])
 def logout():
     session['logged_in'] = False
     return redirect('/')
+
 
 # method to render signup page
 @application.route('/signup_page', methods=['GET', 'POST'])
