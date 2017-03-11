@@ -101,6 +101,11 @@ def edit_contact():
     return redirect('edit_contacts')
 
 
+@application.route('/back_to_messages', methods=['POST'])
+def back_to_messages():
+    return redirect('account_page')
+
+
 # this function will add contact to the contacts_database
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
