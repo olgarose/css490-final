@@ -50,7 +50,8 @@ def account_page():
 def send_message():
     contacts = request.form.getlist('select_contacts')
     for contact in contacts:
-        phone_number = contact.split()[-1]
+        print('Contact is ' + contact)
+        phone_number = contact.split('|')[-1]
         try:
             client.messages.create(
                 to=phone_number,
@@ -77,25 +78,25 @@ def edit_contacts_page():
 
 @application.route('/edit_contact', methods=['GET', 'POST'])
 def edit_contact():
-    contacts = request.form.getlist('select_contacts')
-    print('Contacts' + str(contacts))
+    contacts_to_delete = request.form.getlist('select_contacts')
     all_contacts = contacts_table.scan()['Items']
+    phones = []
+    first_names = []
 
-    for c in contacts:
-        phone = str(c.split('|')[-1]).strip()
-        name = str(c.split()[0]).strip()
-        print('Phone is ' + phone)
-        print('Name is ' + name)
-        for c in all_contacts:
-            for attribute in c:
-                if attribute == 'phone_number' and c[attribute] == phone:
-                    if c['first_name'] == name:
-                        global username
-                        key = {
+    for contact in contacts_to_delete:
+        split_contact = contact.split('|')
+        first_names += [str(split_contact[0].split()[0].strip())]
+        phones += [str(split_contact[-1].strip())]
+
+    for c in all_contacts:
+        for n, p in zip(first_names, phones):
+            if n == c['first_name'] and p == c['phone_number']:
+                global username
+                key = {
                             'user': username,
                             'contact_id': c['contact_id']
                         }
-                        contacts_table.delete_item(Key=key)
+                contacts_table.delete_item(Key=key)
     return redirect('edit_contacts')
 
 
