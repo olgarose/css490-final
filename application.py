@@ -104,9 +104,9 @@ def edit_contact():
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
     # getting names to query from webrequest
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    phone = request.form['phone']
+    first_name = request.form['first_name'].strip()
+    last_name = request.form['last_name'].strip()
+    phone = request.form['phone'].strip()
 
     # if first name or phone number are empty - NEED TO DISPLAY ERROR MESSAGE
     if len(first_name) == 0 or len(phone) == 0:
@@ -118,7 +118,6 @@ def add_contact():
         if not last_name:
             last_name = ' '
         global username
-        print('username is ' + username)
         contact = {'user': username, 'contact_id': user_id, 'first_name': first_name, 'last_name': last_name,
                    'phone_number': phone}
 
