@@ -40,8 +40,9 @@ def account_page():
     contacts_to_display = {}
 
     for contact in contacts:
-        name = contact['first_name'] + ' ' + contact['last_name']
-        contacts_to_display[name] = contact['phone_number']
+        if username == contact['user']:
+            name = contact['first_name'] + ' ' + contact['last_name']
+            contacts_to_display[name] = contact['phone_number']
 
     return render_template('account.html', contacts=contacts_to_display)
 
@@ -70,8 +71,9 @@ def edit_contacts_page():
     contacts_to_display = {}
 
     for contact in contacts:
-        name = contact['first_name'] + ' ' + contact['last_name']
-        contacts_to_display[name] = contact['phone_number']
+        if username == contact['user']:
+            name = contact['first_name'] + ' ' + contact['last_name']
+            contacts_to_display[name] = contact['phone_number']
 
     return render_template('easier_edit.html', contacts=contacts_to_display)
 
