@@ -6,12 +6,12 @@ import uuid
 from tabledef import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user 
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from twilio.rest import TwilioRestClient
 
 application = Flask(__name__)
 
-username = ''
+username = 'example@example.com'
 password = ''
 
 access_key = 'AKIAJSVUOAS23R7X3XZA'
@@ -101,7 +101,17 @@ def edit_contact():
             for attribute in c:
                 if attribute == 'phone_number' and c[attribute] == phone:
                     if c['first_name'] == name:
-                        contacts_table.delete_item(Key={'contact_id': c['contact_id']})
+                        global username
+                        key = {
+                            'user': username,
+                            'contact_id': c['contact_id']
+                        }
+                        print('Username is ' + username)
+                        print('Contact id is ' + c['contact_id'])
+                        get_item = contacts_table.get_item(Key=key)
+                        print('Get item is ' + str(get_item))
+                        response = contacts_table.delete_item(Key=key)
+                        print('response is ' + str(response))
                         print("name is " + name)
                         print("phone num is " + c[attribute])
     return redirect('edit_contacts')
@@ -124,7 +134,10 @@ def add_contact():
         user_id = str(uuid.uuid4())
         if not last_name:
             last_name = ' '
-        contact = {'contact_id': user_id, 'first_name': first_name, 'last_name': last_name, 'phone_number': phone}
+        global username
+        print('username is ' + username)
+        contact = {'user': username, 'contact_id': user_id, 'first_name': first_name, 'last_name': last_name,
+                   'phone_number': phone}
 
     contacts_table.put_item(Item=contact)
 
@@ -174,12 +187,13 @@ def main():
     else:
         return render_template('index.html')
 
+
 # method to render login page
 @application.route('/login_page', methods=['GET', 'POST'])
 def login_page():
     if request.method == 'POST':
         engine = create_engine('sqlite:///tutorial.db', echo=True)
-        #create session
+        # create session
         Session = sessionmaker(bind=engine)
         s = Session()
 
@@ -192,6 +206,8 @@ def login_page():
             session['logged_in'] = True
             login_success = 'Login Successful!'
             print(login_success)
+            global username
+            username = email_input
             return account_page()
         else:
             wrong_cred_err = Markup("<p> Invalid credentials<p>")
@@ -200,21 +216,23 @@ def login_page():
         return redirect("/account_page")
     return render_template('login.html')
 
+
 @application.route('/logout', methods=['GET', 'POST'])
 def logout():
     session['logged_in'] = False
     return redirect('/')
+
 
 # method to render signup page
 @application.route('/signup_page', methods=['GET', 'POST'])
 def signup_page():
     if request.method == 'POST':
         engine = create_engine('sqlite:///tutorial.db', echo=True)
-        #create session
+        # create session
         Session = sessionmaker(bind=engine)
         s = Session()
 
-        #pull in data from form
+        # pull in data from form
         email_input = request.form.get("email")
         password_input = request.form.get("password")
         password_verify_input = request.form.get("password_verify")
