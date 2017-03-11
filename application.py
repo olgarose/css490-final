@@ -83,7 +83,7 @@ def edit_contacts_page():
         name = contact['first_name'] + ' ' + contact['last_name']
         contacts_to_display[name] = contact['phone_number']
 
-    return render_template('edit_contacts.html', contacts=contacts_to_display)
+    return render_template('easier_edit.html', contacts=contacts_to_display)
 
 
 @application.route('/edit_contact', methods=['GET', 'POST'])
@@ -192,7 +192,7 @@ def login_page():
             session['logged_in'] = True
             login_success = 'Login Successful!'
             print(login_success)
-            return main()
+            return account_page()
         else:
             wrong_cred_err = Markup("<p> Invalid credentials<p>")
             flash(wrong_cred_err)
