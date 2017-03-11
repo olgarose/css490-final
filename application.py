@@ -51,8 +51,7 @@ def account_page():
 def send_message():
     contacts = request.form.getlist('select_contacts')
     for contact in contacts:
-        print('Contact is ' + contact)
-        phone_number = contact.split('|')[-1]
+        phone_number = contact.split('|')[-1].strip()
         try:
             client.messages.create(
                 to=phone_number,
@@ -61,7 +60,7 @@ def send_message():
                 # media_url="https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg",
             )
         except:
-            print('NOT VALID NUMBER' + contact.split()[-1])
+            print('NOT VALID NUMBER ' + phone_number)
     return redirect('account_page')
 
 
