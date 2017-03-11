@@ -60,12 +60,12 @@
 <!-- Navbar -->
 <div class="w3-top">
     <div class="w3-bar w3-black w3-card-2">
-        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right"
-           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
-                class="fa fa-bars"></i></a>
+        <!--<a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right"-->
+           <!--href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i-->
+                <!--class="fa fa-bars"></i></a>-->
         <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
-        <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i
-                class="fa fa-search"></i></a>
+        <!--<a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i-->
+                <!--class="fa fa-search"></i></a>-->
     </div>
 </div>
 
@@ -98,19 +98,32 @@
                                         <br>
                                     {% endfor %}
                                 </select>
+                                <br>
+                                <br>
                                 <button class="w3-bar w3-black" type="submit">Send</button>
                             </div>
                         </div>
+
                     </div>
+
                 </form>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <form action="/edit_contacts" method=post>
+                                <button class="w3-bar w3-black" type="submit">Edit Contacts</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         {#    Edit contacts Button #}
         <div class="col-md-4">
-            <form action="/edit_contacts" method=post>
-                <button class="w3-bar w3-black" type="submit">Edit Contacts</button>
-            </form>
+            <!--<form action="/edit_contacts" method=post>-->
+                <!--<button class="w3-bar w3-black" type="submit">Edit Contacts</button>-->
+            <!--</form>-->
         </div>
 
         {# Adding Contact Form #}

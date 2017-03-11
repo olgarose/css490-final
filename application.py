@@ -43,20 +43,6 @@ def account_page():
     return render_template('account.html', contacts=contacts_to_display)
 
 
-# KEEPING OLD CODE FOR NOW, MIGHT NEED FOR REFERENCE
-# # method to render account page
-# @application.route('/account_page', methods=['GET', 'POST'])
-# def account_page():
-#     response = contacts_table.scan()
-#     response = response['Items']
-#     contacts_to_display = {}
-#     x = 0
-#     for i in response:
-#         contacts_to_display[x] = {'first': i['first_name'], 'number': i['phone_number']}
-#         x += 1
-#     return render_template('account.html', contacts=contacts_to_display)
-
-
 @application.route('/send_message', methods=['GET', 'POST'])
 def send_message():
     contacts = request.form.getlist('select_contacts')
