@@ -1,162 +1,117 @@
 <!DOCTYPE html>
 <html>
-<title>Edit Contacts</title>
+<title>Team-Text</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script type="text/javascript" src="{{ url_for('static', filename = 'javascr.js') }}"></script>
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+
+    body, html {
+        height: 100%
+    }
+
+    #bootstrap-overrides input, button, select,
+    textarea, input, optgroup {
+        color: #000000;
+    }
+
+    .bgimg {
+        min-height: 100%;
+        background: url("/static/account_image.jpg") center;
+        background-size: cover;
+    }
+
+    .row_page {
+        position: absolute;
+        top: 40%;
+    }
+
+    .contact_form {
+        width: 150%;
+    }
+
+    .remove_contacts {
+        padding-top: 25%;
+    }
+
+    .selectpicker {
+        width: 100%;
+    }
+
+    .w3-display-topleft {
+        top: 6%;
+    }
+
+</style>
+<body>
 
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Edit Contacts</h4>
-            <div class="table-responsive">
-                <table id="mytable" class="table table-bordred table-striped">
-
-                    <thead>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Phone Number</th>
-
-                    <th>Edit</th>
-                    <th>Delete</th>
-                    </thead>
-
-                    <tbody>
-                    <tr>
-                        <td>Olga</td>
-                        <td>Rose</td>
-                        <td>206 516 9889</td>
-                        <td>
-                            <p data-placement="top" data-toggle="tooltip" title="Edit">
-                                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal"
-                                        data-target="#edit"><span class="glyphicon glyphicon-pencil"></span></button>
-                            </p>
-                        </td>
-                        <td>
-                            <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                <button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal"
-                                        data-target="#delete"><span class="glyphicon glyphicon-trash"></span></button>
-                            </p>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Joe</td>
-                        <td>Shmoe</td>
-                        <td>425 555 1234</td>
-                        <td>
-                            <p data-placement="top" data-toggle="tooltip" title="Edit">
-                                <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal"
-                                        data-target="#edit"><span class="glyphicon glyphicon-pencil"></span></button>
-                            </p>
-                        </td>
-                        <td>
-                            <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                <button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal"
-                                        data-target="#delete"><span class="glyphicon glyphicon-trash"></span></button>
-                            </p>
-                        </td>
-                    </tr>
-
-
-                    </tbody>
-
-                </table>
-
-                {#                <div class="clearfix"></div>#}
-                {#                <ul class="pagination pull-right">#}
-                {#                    <li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>#}
-                {#                    <li class="active"><a href="#">1</a></li>#}
-                {#                    <li><a href="#">2</a></li>#}
-                {#                    <li><a href="#">3</a></li>#}
-                {#                    <li><a href="#">4</a></li>#}
-                {#                    <li><a href="#">5</a></li>#}
-                {#                    <li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>#}
-                {#                </ul>#}
-            </div>
-
-        </div>
+<!-- Navbar -->
+<div class="w3-top">
+    <div class="w3-bar w3-black w3-card-2">
+        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+        <a href="{{ url_for('account_page') }}" class="w3-bar-item w3-button w3-padding-large">MESSAGE HUB</a>
+        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
     </div>
 </div>
 
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+    <div class="w3-display-topleft w3-padding-large w3-xlarge">
+        Manage Contacts
+    </div>
+    {# BLANK LEFT SIDE OF PAGE#}
+    <div class="row_page">
+        <div class="col-md-4">
+            <div class="container">
 
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
-                        class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-                <h4 class="modal-title custom_align" id="Heading">Edit Your Contact</h4>
             </div>
+        </div>
 
-            <div class="modal-body">
-                <form action="/edit_contact" method="POST" id="contacts">
-                    <div class="form-group">
-                        <input class="form-control " type="text" name="first_name" placeholder="Olga">
+
+        <div class="col-md-4">
+            {# Adding Contact Form #}
+            <div class="contact_form">
+                <div class="go_back">
+                    <div class="col-md-8">
+                        <form action="/back_to_messages" method="POST">
+                            <button class="w3-bar w3-black" type="submit">Back to Message Hub</button>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <input class="form-control " type="text" name="last_name" placeholder="Rose">
-                    </div>
-                    <div class="form-group">
-                        <input class="form-control " type="text" name="phone_number" placeholder="206 516 9889">
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-warning btn-lg" class="glyphicon glyphicon-ok-sign" style="width: 100%;"
-                                type="submit">Edit Contact
-                        </button>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <form action="/add_contact" method="POST" id="contacts">
+                    <div class="col-md-8">
+                        <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
+                        <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
+                        <input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>
+                        <button class="w3-bar w3-black" type="submit">Add</button>
                     </div>
                 </form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-</div>
-{# Adding Contact Form #}
-{#        <div class="col-md-4">#}
-{#            <div class="contact_form">#}
-{#                <form action="/add_contact" method="POST" id="contacts">#}
-{#                    <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>#}
-{#                    <input class="w3-input" name="last_name" type="text" placeholder="Last Name">#}
-{#                    <input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>#}
-{#                    <br>#}
-{#                    <br>#}
-{#                    <button class="w3-bar w3-black" type="submit">Add</button>#}
-{#                </form>#}
-{#            </div>#}
-{#        </div>#}
 
-<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
-                        class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-                <h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
-            </div>
-            <div class="modal-body">
-
-                <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure
-                    you
-                    want to delete this Record?
+                <div class="remove_contacts">
+                    <div class="col-md-8">
+                        <form action="/edit_contact" method="POST" id="select_contacts">
+                            <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
+                                {% for name, number in contacts.items() %}
+                                    <option>{{ name }} | {{ number }}</option>
+                                    <br>
+                                {% endfor %}
+                            </select>
+                            <button class="w3-bar w3-black" type="submit">Remove</button>
+                        </form>
+                    </div>
                 </div>
-
-            </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-ok-sign"></span> Yes
-                </button>
-                <button type="button" class="btn btn-default" data-dismiss="modal"><span
-                        class="glyphicon glyphicon-remove"></span> No
-                </button>
             </div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
+</body>
+</html>
+
+
+
