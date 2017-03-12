@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-<title>Account</title>
+<title>Team-Text</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script type = "text/javascript" src = "{{ url_for('static', filename = 'javascr.js') }}" ></script>
+<script type="text/javascript" src="{{ url_for('static', filename = 'javascr.js') }}"></script>
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -23,7 +23,7 @@
 
     .bgimg {
         min-height: 100%;
-        background: url("/static/home_page.jpg") center;
+        background: url("/static/account_image.jpg") center;
         background-size: cover;
     }
 
@@ -36,14 +36,7 @@
         top: 40%;
     }
 
-    .contact_form {
-
-        padding-right: 30%;
-        padding-left: 20%;
-    }
-
     .add_contacts {
-
         padding-right: 70%;
         padding-left: 10%;
     }
@@ -52,6 +45,9 @@
         width: 100%;
     }
 
+    .w3-display-topleft {
+        top: 6%;
+    }
 </style>
 <body>
 
@@ -59,40 +55,31 @@
 <!-- Navbar -->
 <div class="w3-top">
     <div class="w3-bar w3-black w3-card-2">
-        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right"
-           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
-                class="fa fa-bars"></i></a>
-        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
-        <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i
-                class="fa fa-search"></i></a>
+        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
     </div>
 </div>
 
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
     <div class="w3-display-topleft w3-padding-large w3-xlarge">
-        Account Page
+        Message Hub
     </div>
+    {# BLANK LEFT SIDE OF PAGE#}
     <div class="row_page">
         <div class="col-md-4">
             <div class="container">
 
-                <div class="add_contacts">
-                    <form action="/select_contacts" method="POST" id="select_contacts">
-                         <select id = "select_contacts" name = "select_contacts" class="selectpicker" data-live-search="true" multiple>
-                            {% for contact in contacts %}
-                                <option >{{ contacts[contact]['first'] }} {{ contacts[contact]['number'] }}</option>
-                                <br>
-                            {% endfor %}
-                        </select>
-                        <button class="w3-bar w3-black" type="submit">Add</button>
-                    </form>
-                </div>
             </div>
-
         </div>
-        <div class="col-md-4">
 
+
+        <div class="col-md-4">
+        <div class="w3-panel w3-red" align="center">
+        {% for message in get_flashed_messages() %}
+        {{message}}
+        {% endfor %}
+        </div>
             {# Message Box #}
             <div class="messagebox">
                 <form action="/send_message" method=post>
@@ -102,27 +89,38 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12 form-group">
+                                <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
+                                    {% for name, number in contacts.items() %}
+                                        <option>{{ name }} | {{ number }}</option>
+                                        <br>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <br>
                                 <button class="w3-bar w3-black" type="submit">Send</button>
                             </div>
                         </div>
+
                     </div>
+
                 </form>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <form action="/edit_contacts" method=post>
+                                <button class="w3-bar w3-black" type="submit">Edit Contacts</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        {#    Edit contacts Button #}
         <div class="col-md-4">
 
-            {# Adding Contact Form #}
-            <div class="contact_form">
-                <form action="/add_contact" method="POST" id="contacts">
-                    <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
-                    <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
-                    <input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>
-                    <br>
-                    <br>
-                    <button class="w3-bar w3-black" type="submit">Add</button>
-                </form>
-            </div>
         </div>
+
     </div>
 
 
@@ -133,4 +131,3 @@
 
 </body>
 </html>
-

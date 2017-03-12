@@ -1,59 +1,165 @@
 from __future__ import print_function
-import boto3
+import boto3, flask_login, requests
 from boto3.dynamodb.conditions import Key, Attr
-from flask import Flask
-from flask import render_template, redirect, url_for, request, jsonify, Markup, flash
-import twilio.twiml
+from flask import Flask, render_template, url_for, request, Markup, flash, redirect, session, abort
 import uuid
+from tabledef import *
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
+from twilio.rest import TwilioRestClient
+from flask_session import Session
 
 application = Flask(__name__)
-
+application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1sdfsdgsdsdgaJKJL3rq3d3wdod3qfzlJI/o+'
 username = ''
 password = ''
 
-access_key = 'AKIAJSVUOAS23R7X3XZA'
-secret_key = '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'
-dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+access_key = 'AKIAILAGYSYR5WRQ3A7A'
+secret_key = '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'
+dynamodb = boto3.resource('dynamodb', aws_access_key_id=access_key, aws_secret_access_key=secret_key, region_name='us-west-2')
 table = dynamodb.Table('490final-userinfostore')
-callers = {
-    "+14158675309": "Curious George",
-    "+14158675310": "Boots",
-    "+14158675311": "Virgil",
-}
+#login_manager.login_view = "login"
+engine = create_engine('sqlite:///tutorial.db', echo=True)
+# create session
+Session = sessionmaker(bind=engine)
+s = Session()
+
+# TWILIO INFO
+ACCOUNT_SID = "AC1a3f636ceb05e4559409a12976a0f9d6"
+AUTH_TOKEN = "22fa61aef0c4e56ffc8e333dd8f1bf33"
+client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+twilio_phone = '2065390317'
+
 contacts_table = dynamodb.Table('css490-final-contacts-list')
 
 
-# this function will add contact to the contacts_database
-@application.route("/select_contacts", methods=['POST', 'GET'])
-def select_contacts():
-    select = request.form.getlist('select_contacts')
-    print("VALUES? =" + str(select))
+@application.route('/account_page', methods=['GET', 'POST'])
+def account_page():
+    print("Session status:", session['logged_in'])
+    if session['logged_in'] == False:
+        unauthorized = Markup("<p>You are not authorized to access that page.</p>")
+        flash(unauthorized)
+        return redirect('/')
+    else:
+        contacts = contacts_table.scan()['Items']
+        contacts_to_display = {}
+
+        for contact in contacts:
+            if username == contact['user']:
+                name = contact['first_name'] + ' ' + contact['last_name']
+                contacts_to_display[name] = contact['phone_number']
+
+    return render_template('account.html', contacts=contacts_to_display)
+
+
+@application.route('/send_message', methods=['GET', 'POST'])
+def send_message():
+    print("Session status:", session['logged_in'])
+    if session['logged_in'] == False:
+        unauthorized = Markup("<p>You are not authorized to access that page.</p>")
+        flash(unauthorized)
+        return redirect('/')
+    else:
+        contacts = request.form.getlist('select_contacts')
+        for contact in contacts:
+            phone_number = contact.split('|')[-1].strip()
+            try:
+                client.messages.create(
+                    to=phone_number,
+                    from_=twilio_phone,
+                    body=request.form["message"],
+                    # media_url="https://c1.staticflickr.com/3/2899/14341091933_1e92e62d12_b.jpg",
+                )
+            except:
+                print('NOT VALID NUMBER ' + phone_number)
+    return redirect('account_page')
+
+
+@application.route('/edit_contacts', methods=['GET', 'POST'])
+def edit_contacts_page():
+    print("Session status:", session['logged_in'])
+    if session['logged_in'] == False:
+        unauthorized = Markup("<p>You are not authorized to access that page.</p>")
+        flash(unauthorized)
+        return redirect('/')
+    else:
+        contacts = contacts_table.scan()['Items']
+        contacts_to_display = {}
+
+        for contact in contacts:
+            if username == contact['user']:
+                name = contact['first_name'] + ' ' + contact['last_name']
+                contacts_to_display[name] = contact['phone_number']
+
+    return render_template('edit_contacts.html', contacts=contacts_to_display)
+
+
+@application.route('/edit_contact', methods=['GET', 'POST'])
+def edit_contact():
+    print("Session status:", session['logged_in'])
+    if session['logged_in'] == False:
+        unauthorized = Markup("<p>You are not authorized to access that page.</p>")
+        flash(unauthorized)
+        return redirect('/')
+    else:
+        contacts_to_delete = request.form.getlist('select_contacts')
+        all_contacts = contacts_table.scan()['Items']
+        phones = []
+        first_names = []
+
+        for contact in contacts_to_delete:
+            split_contact = contact.split('|')
+            first_names += [str(split_contact[0].split()[0].strip())]
+            phones += [str(split_contact[-1].strip())]
+
+        for c in all_contacts:
+            for n, p in zip(first_names, phones):
+                if n == c['first_name'] and p == c['phone_number']:
+                    global username
+                    key = {
+                                'user': username,
+                                'contact_id': c['contact_id']
+                            }
+                    contacts_table.delete_item(Key=key)
+    return redirect('edit_contacts')
+
+
+@application.route('/back_to_messages', methods=['GET','POST'])
+def back_to_messages():
     return redirect('/account_page')
 
 
 # this function will add contact to the contacts_database
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
-    # getting names to query from webrequest
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    phone = request.form['phone']
-
-    # if first name or phone number are empty - NEED TO DISPLAY ERROR MESSAGE
-    if len(first_name) == 0 or len(phone) == 0:
-        result_message = Markup("<h4 style=\"color: #e21f46;\">PLEASE ENTER VALUES IN ALL REQUIRED FIELDS</h4>")
-        flash(result_message)
-        return redirect("/account_page")
+    print("Session status:", session['logged_in'])
+    if session['logged_in'] == False:
+        unauthorized = Markup("<p>You are not authorized to access that page.</p>")
+        flash(unauthorized)
+        return redirect('/')
     else:
-        user_id = str(uuid.uuid4())
-        if len(last_name) == 0:
-            new_item = {'contact_id': user_id, 'first_name': first_name, 'phone_number': phone}
+        # getting names to query from webrequest
+        first_name = request.form['first_name'].strip()
+        last_name = request.form['last_name'].strip()
+        phone = request.form['phone'].strip()
+
+        # if first name or phone number are empty - NEED TO DISPLAY ERROR MESSAGE
+        if len(first_name) == 0 or len(phone) == 0:
+            result_message = Markup("<h4 style=\"color: #e21f46;\">PLEASE ENTER VALUES IN ALL REQUIRED FIELDS</h4>")
+            flash(result_message)
+            return redirect("/account_page")
         else:
-            new_item = {'contact_id': user_id, 'first_name': first_name, 'last_name': last_name, 'phone_number': phone}
+            user_id = str(uuid.uuid4())
+            if not last_name:
+                last_name = ' '
+            global username
+            contact = {'user': username, 'contact_id': user_id, 'first_name': first_name, 'last_name': last_name,
+                       'phone_number': phone}
 
-        contacts_table.put_item(Item=new_item)
+            contacts_table.put_item(Item=contact)
 
-        return redirect("/account_page")
+    return redirect("/edit_contacts")
 
 
 def create_table():
@@ -94,121 +200,95 @@ def create_table():
 # method to render main page
 @application.route('/')
 def main():
-    create_table()
-    return render_template('index.html')
-
-
-# method to render login page
-@application.route('/account_page', methods=['GET', 'POST'])
-def account_page():
-    response = contacts_table.scan()
-    response = response['Items']
-    contacts_to_display = {}
-    x = 0
-    for i in response:
-        contacts_to_display[x] = {'first': i['first_name'], 'number': i['phone_number']}
-        x += 1
-    return render_template('account.html', contacts=contacts_to_display)
+    print("Session status:", session['logged_in'])
+    if session['logged_in'] == False:
+        return render_template('index logged out.html')
+    else:
+        return render_template('index.html')
 
 
 # method to render login page
 @application.route('/login_page', methods=['GET', 'POST'])
 def login_page():
+    print("Session status:", session['logged_in'])
+    if session['logged_in'] == True:
+        already_logged_in = Markup("<p> Looks like you're already logged in... <br> Please log out if you'd like to login to another account.</p>")
+        flash(already_logged_in)
+        return redirect('/account_page')
+    else:
+        if request.method == 'POST':
+            email_input = request.form.get("email")
+            password_input = request.form.get("password")
+
+            query = s.query(User).filter(User.username.in_([email_input]), User.password.in_([password_input])).first()
+            # print("\n\nquery: ", query, "\n\n")
+            if query:
+                session['logged_in'] = True
+                print("Session Username: ", session['logged_in'])
+                login_success = 'Login Successful!'
+                print(login_success)
+                global username
+                username = email_input
+                return redirect('account_page')
+            else:
+                wrong_cred_err = Markup("<p> Invalid credentials<p>")
+                flash(wrong_cred_err)
+                return render_template('login.html')
+            return redirect("/account_page")
     return render_template('login.html')
 
 
-@application.route('/login', methods=['GET', 'POST'])
-def login():
-    create_table()
-    email_input = request.form.get("email")
-    password_input = request.form.get("password")
-
-    # print("email: ", email_input, "\npassword: ", password_input)
-    return render_template('login.html')
-
-
-# method to render login page
-@application.route('/signup_page', methods=['GET', 'POST'])
-def signup_page():
-    return render_template('signup.html')
-
-
-# method to render sign up page
-@application.route('/signup', methods=['GET', 'POST'])
-def signup():
-    create_table()
-    email_input = request.form.get("email")
-    password_input = request.form.get("password")
-    password_verify_input = request.form.get("password_verify")
-    first_name_input = request.form.get("first_name")
-    last_name_input = request.form.get("last_name")
-
-    if password_input != password_verify_input:
-        password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
-        flash(password_error)
-        return render_template('signup.html')
-
-    response = table.query(KeyConditionExpression=Key('email').eq(email_input))
-    items = response['Items']
-    if len(items) > 0:
-        dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
-        flash(dup_email_error)
-        return render_template('signup.html')
-
-    dict = {'email': email_input, 'password': password_input,
-            'first_name': first_name_input, 'last_name': last_name_input}
-    table.put_item(Item=dict)
-
-    return render_template('login.html')
-
-
-# # method to render register page
-# @application.route('/register', methods=['GET', 'POST'])
-# def register():
-#     createTable()
-#     email_input = request.form.get("email")
-#     password_input = request.form.get("password")
-#     password_verify_input = request.form.get("password_verify")
-#     first_name_input = request.form.get("first_name")
-#     last_name_input = request.form.get("last_name")
-#
-#     if password_input != password_verify_input:
-#         password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
-#         flash(password_error)
-#         return render_template('signup.html')
-#
-#     response = table.query(KeyConditionExpression=Key('email').eq(email_input))
-#     items = response['Items']
-#     if len(items) > 0:
-#         dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
-#         flash(dup_email_error)
-#         return render_template('signup.html')
-#
-#     dict={'email': email_input, 'password': password_input,
-#         'first_name': first_name_input, 'last_name': last_name_input}
-#     table.put_item(Item=dict)
-#
-#     return render_template('login.html')
+@application.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session['logged_in'] = False
+    #print("Session status:", session['logged_in'])
+    return redirect('/')
 
 
 # method to render signup page
-@application.route('/send_message', methods=['GET', 'POST'])
-def send_message():
-    """Respond and greet the caller by name."""
-
-    from_number = request.values.get('From', None)
-    if from_number in callers:
-        message = callers[from_number] + ", thanks for the message!"
+@application.route('/signup_page', methods=['GET', 'POST'])
+def signup_page():
+    print("Session status:", session['logged_in'])
+    if session['logged_in'] == True:
+        already_logged_in = Markup("<p> Looks like you're already logged in... <br> Please log out if you'd like to sign up again.</p>")
+        flash(already_logged_in)
+        return redirect('/account_page')
     else:
-        message = "Monkey, thanks for the message!"
+        if request.method == 'POST':
+            # pull in data from form
+            email_input = request.form.get("email")
+            password_input = request.form.get("password")
+            password_verify_input = request.form.get("password_verify")
+            first_name_input = request.form.get("first_name")
+            last_name_input = request.form.get("last_name")
 
-    resp = twilio.twiml.Response()
-    print (resp.message(message))
+            if password_input != password_verify_input:
+                print("Mismatched passwords")
+                password_error = Markup("<p> Passwords provided do not match, please try again.</p>")
+                flash(password_error)
+                return render_template('signup.html')
 
-    return redirect('account_page')
+            try:
+                query = s.query(User).filter(User.username.in_([email_input]))
+                result = query.first()
+                if result:
+                    print("Duplicate email")
+                    dup_email_error = Markup("<p> The email is already in use with our services, please log in<p>")
+                    flash(dup_email_error)
+                    return render_template('signup.html')
+            except:
+                print("Query Error")
+                return render_template('signup.html')
+
+            user = User(email_input, password_input, email_input, first_name_input, last_name_input)
+            s.add(user)
+            s.commit()
+
+            return render_template('login.html')
+    return render_template('signup.html')
 
 
 if __name__ == '__main__':
-    application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1fzlJI/o+'
+    # session['logged_in'] = False
     application.run(debug=True)
-
+    SESSION_TYPE = 'filesystem'
