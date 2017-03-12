@@ -1,5 +1,6 @@
 awscli==1.11.43
 awsebcli==3.10.0
+blessed==1.14.1
 boto3==1.4.4
 botocore==1.5.15
 cement==2.8.2
@@ -12,11 +13,14 @@ docutils==0.13.1
 Flask==0.12
 Flask-Boto3==0.2.2
 Flask-Login==0.4.0
+Flask-Session==0.3.1
 httplib2==0.10.3
+itsdangerous==0.24
 Jinja2==2.9.5
 jmespath==0.9.1
 MarkupSafe==0.23
 pathspec==0.5.0
+pbkdf2==1.3
 pyasn1==0.1.9
 pycrypto==2.6.1
 PySocks==1.6.6
@@ -24,8 +28,10 @@ python-dateutil==2.6.0
 pytz==2016.10
 PyYAML==3.12
 requests==2.9.1
+rsa==3.4.2
 s3transfer==0.1.10
 semantic-version==2.5.0
+six==1.10.0
 SQLAlchemy==1.1.6
 tabulate==0.7.5
 termcolor==1.1.0
