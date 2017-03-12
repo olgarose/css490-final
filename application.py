@@ -12,11 +12,6 @@ from twilio.rest import TwilioRestClient
 application = Flask(__name__)
 application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1sdfsdgsdsdgaJKJL3rq3d3wdod3qfzlJI/o+'
 
-engine = create_engine('sqlite:///tutorial.db', echo=True)
-# create session
-Session = sessionmaker(bind=engine)
-s = Session()
-
 
 username = 'example@example.com'
 password = ''
@@ -188,15 +183,17 @@ def main():
 @application.route('/login_page', methods=['GET', 'POST'])
 def login_page():
     if request.method == 'POST':
-        # engine = create_engine('sqlite:///tutorial.db', echo=True)
-        # # create session
-        # Session = sessionmaker(bind=engine)
-        # s = Session()
+        engine = create_engine('sqlite:///tutorial.db', echo=True)
+        # create session
+        Session = sessionmaker(bind=engine)
+        s = Session()
 
         email_input = request.form.get("email")
         password_input = request.form.get("password")
 
         query = s.query(User).filter(User.username.in_([email_input]), User.password.in_([password_input])).first()
+
+        s.close()
         # print("\n\nquery: ", query, "\n\n")
         if query:
             session['logged_in'] = True
@@ -223,10 +220,10 @@ def logout():
 @application.route('/signup_page', methods=['GET', 'POST'])
 def signup_page():
     if request.method == 'POST':
-        # engine = create_engine('sqlite:///tutorial.db', echo=True)
-        # # create session
-        # Session = sessionmaker(bind=engine)
-        # s = Session()
+        engine = create_engine('sqlite:///tutorial.db', echo=True)
+        # create session
+        Session = sessionmaker(bind=engine)
+        s = Session()
 
         # pull in data from form
         email_input = request.form.get("email")
@@ -254,8 +251,10 @@ def signup_page():
             return render_template('signup.html')
 
         user = User(email_input, password_input, email_input, first_name_input, last_name_input)
+
         s.add(user)
         s.commit()
+        s.close()
 
         return render_template('login.html')
     return render_template('signup.html')
