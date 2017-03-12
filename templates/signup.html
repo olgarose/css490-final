@@ -41,6 +41,9 @@ body, html {height: 100%}
     <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
     <a href="{{ url_for('login_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>
     <a href="{{ url_for('signup_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGNUP</a>
+
+    <!--<a href="{{ url_for('account_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">ACCOUNT</a>-->
+    <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
   </div>
 </div>
 
@@ -59,11 +62,19 @@ body, html {height: 100%}
 
         <div class="signup_box">
             <form action="{{ url_for('signup_page') }}" method=post>
+<!--<<<<<<< HEAD-->
                 <div class="w3-panel w3-red" align="center">
                   {% for message in get_flashed_messages() %}
                     {{message}}
                   {% endfor %}
                 </div>
+<!--=======-->
+        <!--&lt;!&ndash;<div class="flashes" align="center">&ndash;&gt;-->
+          <!--&lt;!&ndash;{% for message in get_flashed_messages() %}&ndash;&gt;-->
+            <!--&lt;!&ndash;{{message}}&ndash;&gt;-->
+          <!--&lt;!&ndash;{% endfor %}&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--&gt;>>>>>> origin/master-->
                 <input class="w3-input" name="email" type="email" placeholder="Email Address*" required>
                 <input class="w3-input" name="password" type="password"  placeholder="Password*" required>
                 <input class="w3-input" name="password_verify" type="password"  placeholder="Verify Password*" required>

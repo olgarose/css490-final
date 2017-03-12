@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <style>
+        body, h1 {
+        font-family: "Raleway", sans-serif
+    }
 
     body, html {
         height: 100%
@@ -23,17 +26,23 @@
         background-size: cover;
     }
 
+    .messagebox {
+        width: 150%;
+    }
+
     .row_page {
         position: absolute;
         top: 40%;
     }
 
     .contact_form {
-        width: 150%;
+        padding-right: 30%;
+        padding-left: 20%;
     }
 
-    .remove_contacts {
-        padding-top: 25%;
+    .add_contacts {
+        padding-right: 70%;
+        padding-left: 10%;
     }
 
     .selectpicker {
@@ -43,19 +52,24 @@
     .w3-display-topleft {
         top: 6%;
     }
-
 </style>
 <body>
+
+
 
 
 <!-- Navbar -->
 <div class="w3-top">
     <div class="w3-bar w3-black w3-card-2">
-        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-opennav w3-right"
+           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                class="fa fa-bars"></i></a>
         <a href="{{ url_for('account_page') }}" class="w3-bar-item w3-button w3-padding-large">MESSAGE HUB</a>
-        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
+        <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i
+                class="fa fa-search"></i></a>
     </div>
 </div>
+
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
     <div class="w3-display-topleft w3-padding-large w3-xlarge">
@@ -68,50 +82,47 @@
 
             </div>
         </div>
-
-
         <div class="col-md-4">
+
             {# Adding Contact Form #}
-            <div class="contact_form">
-                <div class="go_back">
-                    <div class="col-md-8">
-                        <form action="/back_to_messages" method="POST">
-                            <button class="w3-bar w3-black" type="submit">Back to Message Hub</button>
-                        </form>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <br>
-                <br>
-                <form action="/add_contact" method="POST" id="contacts">
-                    <div class="col-md-8">
+            <div class="col-md-4">
+                <div class="contact_form">
+                    <form action="/add_contact" method="POST" id="contacts">
                         <input class="w3-input" name="first_name" type="text" placeholder="First Name*" required>
                         <input class="w3-input" name="last_name" type="text" placeholder="Last Name">
                         <input type="tel" id="fieldPhone" name="phone" placeholder="(555) 555-1212" required>
+                        <br>
+                        <br>
                         <button class="w3-bar w3-black" type="submit">Add</button>
-                    </div>
-                </form>
-
-                <div class="remove_contacts">
-                    <div class="col-md-8">
-                        <form action="/edit_contact" method="POST" id="select_contacts">
-                            <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
-                                {% for name, number in contacts.items() %}
-                                    <option>{{ name }} | {{ number }}</option>
-                                    <br>
-                                {% endfor %}
-                            </select>
-                            <button class="w3-bar w3-black" onclick="return confirm('Are you sure you want to delete selected?');" type="submit">Remove</button>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="select_contacts">
+                <form action="/edit_contact" method="POST" id="select_contacts">
+                    <select id="select_contacts" name="select_contacts" class="selectpicker" multiple>
+                        {% for name, number in contacts.items() %}
+                            <option>{{ name }} | {{ number }}</option>
+                            <br>
+                        {% endfor %}
+                    </select>
+                    <button class="w3-bar w3-black" type="submit">Remove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="w3-display-bottomleft w3-padding-large">
+        Powered by "CSS490 - Clouds"</a>
     </div>
 </div>
+
+
+
+
+
 </body>
 </html>
-
-
-
