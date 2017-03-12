@@ -85,16 +85,16 @@ def edit_contact():
     contacts_to_delete = request.form.getlist('select_contacts')
     all_contacts = contacts_table.scan()['Items']
     phones = []
-    first_names = []
+    names = []
 
     for contact in contacts_to_delete:
         split_contact = contact.split('|')
-        first_names += [str(split_contact[0].split()[0].strip())]
+        names += [str(split_contact[0].split().strip())]
         phones += [str(split_contact[-1].strip())]
 
     for c in all_contacts:
-        for n, p in zip(first_names, phones):
-            if n == c['first_name'] and p == c['phone_number']:
+        for n, p in zip(names, phones):
+            if n == c['first_name'] + ' ' + c['last_name'] and p == c['phone_number']:
                 global username
                 key = {
                             'user': username,
