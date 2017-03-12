@@ -51,7 +51,6 @@
 <!-- Navbar -->
 <div class="w3-top">
     <div class="w3-bar w3-black w3-card-2">
-        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
         <a href="{{ url_for('account_page') }}" class="w3-bar-item w3-button w3-padding-large">MESSAGE HUB</a>
         <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
     </div>
@@ -102,7 +101,7 @@
                                     <br>
                                 {% endfor %}
                             </select>
-                            <button class="w3-bar w3-black" onclick="return confirm('Are you sure you want to delete selected?');" type="submit">Remove</button>
+                            <button class="w3-bar w3-black" type="submit">Remove</button>
                         </form>
                     </div>
                 </div>

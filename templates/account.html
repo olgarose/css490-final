@@ -55,8 +55,7 @@
 <!-- Navbar -->
 <div class="w3-top">
     <div class="w3-bar w3-black w3-card-2">
-        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
-        <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
+        <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">LOGOUT</a>
     </div>
 </div>
 
@@ -75,11 +74,7 @@
 
 
         <div class="col-md-4">
-        <div class="w3-panel w3-red" align="center">
-        {% for message in get_flashed_messages() %}
-        {{message}}
-        {% endfor %}
-        </div>
+
             {# Message Box #}
             <div class="messagebox">
                 <form action="/send_message" method=post>
