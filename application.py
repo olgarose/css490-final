@@ -119,9 +119,9 @@ def add_contact():
 
     # if first name or phone number are empty - NEED TO DISPLAY ERROR MESSAGE
     if len(first_name) == 0 or len(phone) == 0:
-        result_message = Markup("<h4 style=\"color: #e21f46;\">PLEASE ENTER VALUES IN ALL REQUIRED FIELDS</h4>")
+        result_message = Markup("<h4 style=\"color: white;\">PLEASE ENTER VALUES IN ALL REQUIRED FIELDS</h4>")
         flash(result_message)
-        return redirect("/account_page")
+        return redirect("/edit_contacts")
     else:
         user_id = str(uuid.uuid4())
         if not last_name:

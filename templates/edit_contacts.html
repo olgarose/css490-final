@@ -72,6 +72,9 @@
 
         <div class="col-md-4">
             <div class="w3-panel w3-red" align="center">
+                {% for message in get_flashed_messages() %}
+                {{message}}
+                {% endfor %}
             <p>using application in test-mode, so please delete contacts after you are done, to prevent spam from others!</p>
             </div>
             {# Adding Contact Form #}
