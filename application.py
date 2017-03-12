@@ -37,7 +37,7 @@ contacts_table = dynamodb.Table('css490-final-contacts-list')
 @application.route('/account_page', methods=['GET', 'POST'])
 def account_page():
     print("Session status:", session['logged_in'])
-    if session['logged_in'] == False:
+    if 'logged_in' not in session:
         unauthorized = Markup("<p>You are not authorized to access that page.</p>")
         flash(unauthorized)
         return redirect('/')
@@ -56,7 +56,7 @@ def account_page():
 @application.route('/send_message', methods=['GET', 'POST'])
 def send_message():
     print("Session status:", session['logged_in'])
-    if session['logged_in'] == False:
+    if 'logged_in' not in session:
         unauthorized = Markup("<p>You are not authorized to access that page.</p>")
         flash(unauthorized)
         return redirect('/')
@@ -79,7 +79,7 @@ def send_message():
 @application.route('/edit_contacts', methods=['GET', 'POST'])
 def edit_contacts_page():
     print("Session status:", session['logged_in'])
-    if session['logged_in'] == False:
+    if 'logged_in' not in session:
         unauthorized = Markup("<p>You are not authorized to access that page.</p>")
         flash(unauthorized)
         return redirect('/')
@@ -98,7 +98,7 @@ def edit_contacts_page():
 @application.route('/edit_contact', methods=['GET', 'POST'])
 def edit_contact():
     print("Session status:", session['logged_in'])
-    if session['logged_in'] == False:
+    if 'logged_in' not in session:
         unauthorized = Markup("<p>You are not authorized to access that page.</p>")
         flash(unauthorized)
         return redirect('/')
@@ -134,7 +134,7 @@ def back_to_messages():
 @application.route("/add_contact", methods=['POST', 'GET'])
 def add_contact():
     print("Session status:", session['logged_in'])
-    if session['logged_in'] == False:
+    if 'logged_in' not in session:
         unauthorized = Markup("<p>You are not authorized to access that page.</p>")
         flash(unauthorized)
         return redirect('/')
@@ -200,8 +200,8 @@ def create_table():
 # method to render main page
 @application.route('/')
 def main():
-    print("Session status:", session['logged_in'])
-    if session['logged_in'] == False:
+    # print("Session status:", session['logged_in'])
+    if 'logged_in' not in session:
         return render_template('index logged out.html')
     else:
         return render_template('index.html')
@@ -210,8 +210,8 @@ def main():
 # method to render login page
 @application.route('/login_page', methods=['GET', 'POST'])
 def login_page():
-    print("Session status:", session['logged_in'])
-    if session['logged_in'] == True:
+    # print("Session status:", session['logged_in'])
+    if 'logged_in' in session:
         already_logged_in = Markup("<p> Looks like you're already logged in... <br> Please log out if you'd like to login to another account.</p>")
         flash(already_logged_in)
         return redirect('/account_page')
@@ -248,8 +248,8 @@ def logout():
 # method to render signup page
 @application.route('/signup_page', methods=['GET', 'POST'])
 def signup_page():
-    print("Session status:", session['logged_in'])
-    if session['logged_in'] == True:
+    # print("Session status:", session['logged_in'])
+    if 'logged_in' not in session:
         already_logged_in = Markup("<p> Looks like you're already logged in... <br> Please log out if you'd like to sign up again.</p>")
         flash(already_logged_in)
         return redirect('/account_page')
