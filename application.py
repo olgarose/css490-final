@@ -91,10 +91,10 @@ def edit_contact():
         split_contact = contact.split('|')
         names += [str(split_contact[0].strip())]
         phones += [str(split_contact[-1].strip())]
-
+        
     for c in all_contacts:
         for n, p in zip(names, phones):
-            if n == c['first_name'] + ' ' + c['last_name'] and p == c['phone_number']:
+            if n == c['first_name'] + ' ' + c['last_name'] or n == c['first_name'] and p == c['phone_number']:
                 global username
                 key = {
                             'user': username,
