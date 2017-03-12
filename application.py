@@ -224,7 +224,7 @@ def login_page():
             # print("\n\nquery: ", query, "\n\n")
             if query:
                 session['logged_in'] = True
-                print("Session Username: ", session['username'])
+                print("Session Username: ", session['logged_in'])
                 login_success = 'Login Successful!'
                 print(login_success)
                 global username
