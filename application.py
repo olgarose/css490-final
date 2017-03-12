@@ -66,6 +66,8 @@ def send_message():
 
 @application.route('/edit_contacts', methods=['GET', 'POST'])
 def edit_contacts_page():
+    if not session.get('logged_in'):
+        return render_template('login.html')
     contacts = contacts_table.scan()['Items']
     contacts_to_display = {}
 
