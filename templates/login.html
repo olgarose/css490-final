@@ -9,7 +9,7 @@
 body,h1 {font-family: "Raleway", sans-serif}
 body, html {height: 100%}
 .bgimg {
-    background-image: url("{{ url_for('static', filename='login_page.jpg') }}");
+    background-image: url("{{ url_for('static', filename='home_page.jpg') }}");
     min-height: 100%;
     background-position: center;
     background-size: cover;
@@ -40,7 +40,7 @@ body, html {height: 100%}
   <div class="w3-bar w3-black w3-card-2">
     <a href="{{ url_for('main') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
     <a href="{{ url_for('login_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">LOGIN</a>
-    <a href="{{ url_for('signup_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGNUP</a>
+    <!--<a href="{{ url_for('signup_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SIGNUP</a>-->
   </div>
 </div>
 
@@ -51,9 +51,10 @@ body, html {height: 100%}
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
 
-
   <div class="w3-display-middle">
-    <h1 class="w3-jumbo w3-animate-top" style="background: black;">WELCOME BACK</h1>
+      <h1 class="w3-jumbo w3-animate-top" style="background: black;">SQUADTEXT</h1>
+      <p style="background: red;">test-mode, please login using following credentials: <br>
+      email: prototype@squadtext.com password: prototype</p>
   </div>
   <div class="login_box">
     <form action="{{ url_for('login_page') }}" method=post>
