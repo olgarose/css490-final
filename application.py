@@ -89,7 +89,7 @@ def edit_contact():
 
     for contact in contacts_to_delete:
         split_contact = contact.split('|')
-        names += [str(split_contact[0].split().strip())]
+        names += [str(split_contact[0].strip())]
         phones += [str(split_contact[-1].strip())]
 
     for c in all_contacts:
