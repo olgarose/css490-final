@@ -3,9 +3,6 @@ import boto3, flask_login, requests
 from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask, render_template, url_for, request, Markup, flash, redirect, session, abort
 import uuid
-
-from sqlalchemy.orm import scoped_session
-
 from tabledef import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -98,7 +95,6 @@ def edit_contact():
     for c in all_contacts:
         for n, p in zip(names, phones):
             if n == c['first_name'] + ' ' + c['last_name'] and p == c['phone_number']:
-                print('Matched full name ' + c['first_name'] + ' ' + c['last_name'])
                 global username
                 key = {
                             'user': username,
@@ -189,8 +185,8 @@ def login_page():
     if request.method == 'POST':
         engine = create_engine('sqlite:///tutorial.db', echo=True)
         # create session
-        session = scoped_session(sessionmaker(bind=engine))
-        s = session()
+        Session = sessionmaker(bind=engine)
+        s = Session()
 
         email_input = request.form.get("email")
         password_input = request.form.get("password")
@@ -200,7 +196,7 @@ def login_page():
         s.close()
         # print("\n\nquery: ", query, "\n\n")
         if query:
-            # session['logged_in'] = True
+            session['logged_in'] = True
             login_success = 'Login Successful!'
             print(login_success)
             global username
@@ -210,6 +206,8 @@ def login_page():
             wrong_cred_err = Markup("<p> Invalid credentials<p>")
             flash(wrong_cred_err)
             return render_template('login.html')
+        return redirect("/account_page")
+    return render_template('login.html')
 
 
 @application.route('/logout', methods=['GET', 'POST'])
@@ -224,7 +222,7 @@ def signup_page():
     if request.method == 'POST':
         engine = create_engine('sqlite:///tutorial.db', echo=True)
         # create session
-        Session = scoped_session(sessionmaker(bind=engine))
+        Session = sessionmaker(bind=engine)
         s = Session()
 
         # pull in data from form
