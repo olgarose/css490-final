@@ -4,7 +4,6 @@ boto3==1.4.4
 botocore==1.5.15
 cement==2.8.2
 click==6.7
-colorama==0.3.7
 docker-py==1.7.2
 dockerpty==0.4.1
 docopt==0.6.2
@@ -12,13 +11,13 @@ docutils==0.13.1
 Flask==0.12
 Flask-Boto3==0.2.2
 Flask-Login==0.4.0
+Flask-Session==0.3.1
 httplib2==0.10.3
 Jinja2==2.9.5
 jmespath==0.9.1
 MarkupSafe==0.23
 pathspec==0.5.0
 pyasn1==0.1.9
-pycrypto==2.6.1
 PySocks==1.6.6
 python-dateutil==2.6.0
 pytz==2016.10

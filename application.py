@@ -12,6 +12,12 @@ from twilio.rest import TwilioRestClient
 application = Flask(__name__)
 application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1sdfsdgsdsdgaJKJL3rq3d3wdod3qfzlJI/o+'
 
+engine = create_engine('sqlite:///tutorial.db', echo=True)
+# create session
+Session = sessionmaker(bind=engine)
+s = Session()
+
+
 username = 'example@example.com'
 password = ''
 
@@ -182,10 +188,10 @@ def main():
 @application.route('/login_page', methods=['GET', 'POST'])
 def login_page():
     if request.method == 'POST':
-        engine = create_engine('sqlite:///tutorial.db', echo=True)
-        # create session
-        Session = sessionmaker(bind=engine)
-        s = Session()
+        # engine = create_engine('sqlite:///tutorial.db', echo=True)
+        # # create session
+        # Session = sessionmaker(bind=engine)
+        # s = Session()
 
         email_input = request.form.get("email")
         password_input = request.form.get("password")
@@ -217,10 +223,10 @@ def logout():
 @application.route('/signup_page', methods=['GET', 'POST'])
 def signup_page():
     if request.method == 'POST':
-        engine = create_engine('sqlite:///tutorial.db', echo=True)
-        # create session
-        Session = sessionmaker(bind=engine)
-        s = Session()
+        # engine = create_engine('sqlite:///tutorial.db', echo=True)
+        # # create session
+        # Session = sessionmaker(bind=engine)
+        # s = Session()
 
         # pull in data from form
         email_input = request.form.get("email")
