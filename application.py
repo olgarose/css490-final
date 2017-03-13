@@ -16,8 +16,8 @@ application.secret_key = 'cUAaWI0ALM09wzhWmwV/4rJlBK8Ce2N1sdfsdgsdsdgaJKJL3rq3d3
 username = 'example@example.com'
 password = ''
 
-access_key = 'AKIAILAGYSYR5WRQ3A7A'
-secret_key = 'sQ/GDnzkRjtG8Z039v2MiB1Vfqb1Xzc9kqAEcpWI'
+access_key = 'removed for security purposes'
+secret_key = 'removed for security purposes'
 dynamodb = boto3.resource('dynamodb', aws_access_key_id=access_key, aws_secret_access_key=secret_key, region_name='us-west-2')
 table = dynamodb.Table('490final-userinfostore')
 login_manager = flask_login.LoginManager()
@@ -25,8 +25,8 @@ login_manager.init_app(application)
 login_manager.login_view = "login"
 
 # TWILIO INFO
-ACCOUNT_SID = "AC1a3f636ceb05e4559409a12976a0f9d6"
-AUTH_TOKEN = "22fa61aef0c4e56ffc8e333dd8f1bf33"
+ACCOUNT_SID = "removed for security purposes"
+AUTH_TOKEN = "removed for security purposes"
 client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
 twilio_phone = '2065390317'
 
